@@ -1,15 +1,12 @@
 import openai
 import os
-from dotenv import load_dotenv
 import streamlit as st
 import requests
 import re
 
-load_dotenv()
+dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
+openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
-dominio = os.getenv("DOMINIO")
-# openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_model_ada = os.getenv("OPENAI_MODEL")
 openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 openai.api_key = openai_api_key
 
