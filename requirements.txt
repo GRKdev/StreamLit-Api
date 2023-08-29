@@ -1,5 +1,2 @@
 openai
-os
 streamlit
-requests
-re
