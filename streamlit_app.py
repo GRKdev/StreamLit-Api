@@ -99,6 +99,8 @@ if user_input:
             json_response = generate_response_from_mongo_results(data)
             gpt_response = ask_gpt_streaming(json_response, message_placeholder)
             st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+            st.write(f"URL de API: {api_response_url}")
         else:
             gpt_response = ask_gpt_streaming(user_input, message_placeholder)
             st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+            st.write(f"URL de API: {api_response_url}")
