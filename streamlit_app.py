@@ -3,7 +3,7 @@ import os
 import streamlit as st
 import requests
 import re
-from chart_utils import render_pie_chart_marca, render_pie_chart_fam
+from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra
 
 dominio = st.secrets.get("DOMINIO2", os.getenv("DOMINIO2"))
 openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
@@ -128,7 +128,7 @@ if user_input:
 st.sidebar.title("Estadísticas")
 st.sidebar.subheader("Articulos")
 
-if st.sidebar.button("Marca Producto"):
+if st.sidebar.button("Marca Producto", key='button_marca_producto'):
     api_response_url = "/api/art_stat?stat=stat_marca"
     
     full_url = dominio + api_response_url
@@ -142,7 +142,7 @@ if st.sidebar.button("Marca Producto"):
         render_pie_chart_marca(data)
     pass
 
-if st.sidebar.button("Familia Producto"):
+if st.sidebar.button("Familia Producto", key='button_familia_producto'):
     api_response_url = "/api/art_stat?stat=stat_fam" 
     full_url = dominio + api_response_url
     response = requests.get(full_url)
@@ -155,6 +155,30 @@ if st.sidebar.button("Familia Producto"):
         render_pie_chart_fam(data)
     pass
 
-st.sidebar.subheader("Albaranes")
+st.sidebar.subheader("Clientes")
 
+if st.sidebar.button("Domicili Client", key='button_domicili_client'):
+    api_response_url = "/api/cli_stat?stat=comu" 
+    full_url = dominio + api_response_url
+    response = requests.get(full_url)
+    
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
         
+    if response.status_code == 200:
+        data = response.json()
+        render_pie_chart_comunidad_autonoma(data)
+    pass
+
+if st.sidebar.button("Client barres", key='button_client_barres'):
+    api_response_url = "/api/cli_stat?stat=comu" 
+    full_url = dominio + api_response_url
+    response = requests.get(full_url)
+    
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        
+    if response.status_code == 200:
+        data = response.json()
+        render_pie_chart_comunidad_autonoma_barra(data)
+    pass      
