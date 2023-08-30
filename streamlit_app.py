@@ -3,11 +3,14 @@ import os
 import streamlit as st
 import requests
 import re
+from chart_utils import render_pie_chart_marca, render_pie_chart_fam
 
-dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
+dominio = st.secrets.get("DOMINIO2", os.getenv("DOMINIO2"))
 openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
-openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
+# openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
+openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+
 openai.api_key = openai_api_key
 
 def ask_gpt_streaming(prompt, placeholder):
@@ -64,13 +67,21 @@ def generate_response_from_mongo_results(data):
         return "No se encontraron resultados."
     else:
         return str(data)
-    
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
-    
+
+st.set_page_config(
+    page_title="Xabot API",
+    page_icon="bi bi-robot",
+    layout="centered",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "# **GRKdev** v0.1.0"
+    }
+)
 
 st.title('XatBot API NOSQL')
 
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
@@ -87,8 +98,7 @@ if user_input:
         st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
     else:
         api_response_url = ask_fine_tuned_ada(user_input)
-        full_url = dominio + api_response_url
-        
+        full_url = dominio + api_response_url #"http://localhost:5000/api/art_stat?stat=stat_fam"
         response = requests.get(full_url)
         
         with st.chat_message("assistant"):
@@ -96,11 +106,55 @@ if user_input:
         
         if response.status_code == 200:
             data = response.json()
-            json_response = generate_response_from_mongo_results(data)
-            gpt_response = ask_gpt_streaming(json_response, message_placeholder)
-            st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-            st.write(f"URL de API: {api_response_url}")
+            
+            if "/api/art_stat?stat=stat_marca" in api_response_url:
+                render_pie_chart_marca(data)
+
+            if "/api/art_stat?stat=stat_fam" in api_response_url:
+                render_pie_chart_fam(data)
+                                     
+            else:
+                json_response = generate_response_from_mongo_results(data)
+                gpt_response = ask_gpt_streaming(json_response, message_placeholder)
+                st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+                st.write(f"URL de API: {api_response_url}")
+                
         else:
             gpt_response = ask_gpt_streaming(user_input, message_placeholder)
             st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
             st.write(f"URL de API: {api_response_url}")
+
+
+st.sidebar.title("Estadísticas")
+st.sidebar.subheader("Articulos")
+
+if st.sidebar.button("Marca Producto"):
+    api_response_url = "/api/art_stat?stat=stat_marca"
+    
+    full_url = dominio + api_response_url
+    response = requests.get(full_url)
+    
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        
+    if response.status_code == 200:
+        data = response.json()
+        render_pie_chart_marca(data)
+    pass
+
+if st.sidebar.button("Familia Producto"):
+    api_response_url = "/api/art_stat?stat=stat_fam" 
+    full_url = dominio + api_response_url
+    response = requests.get(full_url)
+    
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        
+    if response.status_code == 200:
+        data = response.json()
+        render_pie_chart_fam(data)
+    pass
+
+st.sidebar.subheader("Albaranes")
+
+        
