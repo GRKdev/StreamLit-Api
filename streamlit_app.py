@@ -5,13 +5,8 @@ import requests
 import re
 from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra
 
-dominio = st.secrets.get("DOMINIO2", os.getenv("DOMINIO2"))
+dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
-
-# openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
-openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-
-openai.api_key = openai_api_key
 
 def ask_gpt_streaming(prompt, placeholder):
     messages_list = [
@@ -88,7 +83,10 @@ for message in st.session_state.chat_history:
         st.markdown(message["content"])
 
 user_input = st.chat_input('Ingresa tu pregunta:')
+openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
+# openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
+openai.api_key = openai_api_key
 if user_input:
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
