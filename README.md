@@ -7,7 +7,8 @@ Este proyecto es un ChatBot implementado en varias fases con el objetivo de crea
 ## Fases del Proyecto
 
 ### Fase 1: Preparación de Datos
-Creación de un script para crear dos archivos JSNL (train y valid) con el objetivo de entrenar un modelo de fine-tuning con OpenAI que devuelva respuestas mediante una URL API. El proyecto para esta fase se encuentra en [este repositorio de GitHub](https://github.com/GRKdev/Script-SQL-API).
+Creación de un script para crear dos archivos JSNL (train y valid) con el objetivo de entrenar un modelo de fine-tuning con OpenAI que devuelva respuestas mediante una URL API.
+El proyecto para esta fase se encuentra en [este repositorio de GitHub](https://github.com/GRKdev/Script-SQL-API).
 
 ### Fase 2: Entrenamiento del Modelo
 Entrenamiento del modelo de fine-tuning con OpenAI.
