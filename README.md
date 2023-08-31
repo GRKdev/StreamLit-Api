@@ -23,7 +23,7 @@ Creación del chatbot utilizando Streamlit. El chatbot hace preguntas, y el mode
 
 - [x] Script para la preparación de datos - [url](https://github.com/GRKdev/Script-SQL-API)
 - [ ] Script para la conexión y fine-tuning automático (nuevo API de OpenAI) - [url](https://github.com/GRKdev/Script-SQL-API)
-- [x] Flask API - [url](https://github.com/GRKdev/Flask-Api)
+- [x] Flask API - [url](https://github.com/GRKdev/API)
 - [x] Chatbot StreamLit - [url](https://github.com/GRKdev/StreamLit-Api)
 - [ ] Añadir contexto última pregunta/respuesta (Langchain)
 - [ ] Datos con embeddings (Langchain) para chatear con los documentos

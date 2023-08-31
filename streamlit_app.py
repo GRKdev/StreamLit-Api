@@ -65,8 +65,8 @@ def generate_response_from_mongo_results(data):
 
 st.set_page_config(
     page_title="Xabot API",
-    page_icon="bi bi-robot",
-    layout="centered",
+    page_icon="▶️",
+    layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
         'About': "# **GRKdev** v0.1.0"

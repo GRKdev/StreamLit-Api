@@ -27,7 +27,7 @@ def render_pie_chart_marca(data):
         ],
     }
 
-    s = st_echarts(options=options, height="800px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -56,7 +56,7 @@ def render_pie_chart_fam(data):
         ],
     }
 
-    s = st_echarts(options=options, height="800px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -85,7 +85,7 @@ def render_pie_chart_comunidad_autonoma(data):
         ],
     }
 
-    s = st_echarts(options=options, height="800px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -99,18 +99,20 @@ def render_pie_chart_comunidad_autonoma_barra(data):
         "backgroundColor": "#0E1117",
         "title": {"text": "Clientes por Comunidad Autonoma", "left": "center"},
         "tooltip": {"trigger": "axis"},
-        "legend": {"orient": "vertical", "right": "right"},
+    "legend": {"orient": "vertical", "right": "right", "data": ["Comunidad Autonoma"]},
         "xAxis": {
             "type": "category", 
             "data": x_data,
             "axisLabel": {
-                "rotate": 0  # rota las etiquetas 90 grados
+                "rotate": 0,
+                "fontSize": 8
+
             }
         },
         "yAxis": {"type": "value"},
         "series": [
             {
-                "name": "Cantidad",
+                "name": "Comunidad Autonoma",
                 "type": "bar",
                 "data": y_data,
                 "emphasis": {
@@ -124,6 +126,6 @@ def render_pie_chart_comunidad_autonoma_barra(data):
         ],
     }
 
-    s = st_echarts(options=options, height="800px", theme="dark")
+    s = st_echarts(options=options, height="550px", theme="dark")
     if s is not None:
         st.write(s)
