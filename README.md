@@ -25,5 +25,6 @@ Creación del chatbot utilizando Streamlit. El chatbot hace preguntas, y el mode
 - [ ] Script para la conexión y fine-tuning automático (nuevo API de OpenAI)
 - [x] Flask API
 - [x] Chatbot StreamLit
-- [ ] Añadir contexto
-- [ ] Añadir datos de la empresa (procedimientos) para chatear con los conocimientos.
+- [ ] Añadir contexto última pregunta/respuesta (Langchain)
+- [ ] Datos con embeddings (Langchain) para chatear con los documentos
+- [ ] Creación de Agents y Functions personalizados
