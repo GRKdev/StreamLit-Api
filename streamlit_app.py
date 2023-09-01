@@ -3,12 +3,13 @@ import os
 import streamlit as st
 import requests
 import re
-from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra
+from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,render_bar_chart_monthly_revenue_echarts
+
 
 dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
-def ask_gpt_streaming(prompt, placeholder):
+def ask_gpt(prompt, placeholder):
     messages_list = [
         {"role": "system", "content": "Ets un assistent de la empresa GRK que respon sempre en estil MarkDown, mostra les dades relevants en Negrita. Rebràs pregunta de l'usuari juntament amb dades en format json obtingudes d'una base de dades. Has d'utilitzar ambdós per proporcionar una resposta coherent, clara i útil. Assegura't d'estructurar la informació de manera amigable i fàcil de comprendre per a l'usuari, el nom de client, article o albarà al principi. Si el json conté múltiples elements, sintetitza la informació de manera concisa. Quan tractis amb números monetaris, afegeix el simbol €."},
         {"role": "user", "content": ""},
@@ -65,7 +66,7 @@ def generate_response_from_mongo_results(data):
 
 st.set_page_config(
     page_title="Xabot API",
-    page_icon="▶️",
+    page_icon="★",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -87,6 +88,7 @@ openai_api_key = st.sidebar.text_input('OpenAI API Key', type='password')
 # openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
 openai.api_key = openai_api_key
+
 if user_input:
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
@@ -113,14 +115,12 @@ if user_input:
                                      
             else:
                 json_response = generate_response_from_mongo_results(data)
-                gpt_response = ask_gpt_streaming(json_response, message_placeholder)
+                gpt_response = ask_gpt(json_response, message_placeholder)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-                st.write(f"URL de API: {api_response_url}")
                 
         else:
-            gpt_response = ask_gpt_streaming(user_input, message_placeholder)
+            gpt_response = ask_gpt(user_input, message_placeholder)
             st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-            st.write(f"URL de API: {api_response_url}")
 
 
 st.sidebar.title("Estadísticas")
@@ -178,5 +178,23 @@ if st.sidebar.button("Client barres", key='button_client_barres'):
         
     if response.status_code == 200:
         data = response.json()
+        print(response)
+
         render_pie_chart_comunidad_autonoma_barra(data)
     pass      
+
+st.sidebar.subheader("Albaranes")
+
+if st.sidebar.button("Ejemplo: Ingresos Cliente GRK", key='button_key'):
+    api_response_url = "/api/alb_stat?cli_mes=grk"  # tu endpoint
+    full_url = dominio + api_response_url
+    response = requests.get(full_url)
+    
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        
+    if response.status_code == 200:
+        data = response.json()
+        print(response)
+        render_bar_chart_monthly_revenue_echarts(data)
+    pass

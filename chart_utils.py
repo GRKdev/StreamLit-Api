@@ -9,7 +9,6 @@ def render_pie_chart_marca(data):
         "backgroundColor": "#0E1117",
         "title": {"text": "Marques de Productes", "left": "center"},
         "tooltip": {"trigger": "item"},
-        "legend": {"orient": "vertical", "right": "right"},
         "series": [
             {
                 "name": "Cantidad",
@@ -38,7 +37,6 @@ def render_pie_chart_fam(data):
         "backgroundColor": "#0E1117",
         "title": {"text": "Familia - Productes", "left": "center"},
         "tooltip": {"trigger": "item"},
-        "legend": {"orient": "vertical", "right": "right"},
         "series": [
             {
                 "name": "Cantidad",
@@ -67,7 +65,6 @@ def render_pie_chart_comunidad_autonoma(data):
         "backgroundColor": "#0E1117",
         "title": {"text": "Clientes por Comunidad Autonoma", "left": "center"},
         "tooltip": {"trigger": "item"},
-        "legend": {"orient": "vertical", "right": "right"},
         "series": [
             {
                 "name": "Cantidad",
@@ -99,7 +96,6 @@ def render_pie_chart_comunidad_autonoma_barra(data):
         "backgroundColor": "#0E1117",
         "title": {"text": "Clientes por Comunidad Autonoma", "left": "center"},
         "tooltip": {"trigger": "axis"},
-    "legend": {"orient": "vertical", "right": "right", "data": ["Comunidad Autonoma"]},
         "xAxis": {
             "type": "category", 
             "data": x_data,
@@ -126,6 +122,51 @@ def render_pie_chart_comunidad_autonoma_barra(data):
         ],
     }
 
+    s = st_echarts(options=options, height="550px", theme="dark")
+    if s is not None:
+        st.write(s)
+
+def render_bar_chart_monthly_revenue_echarts(data):
+    data_dict = data[0] if data else {}
+    
+    nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
+    current_year = data_dict.get("Año", "Desconocido")
+    
+    ingresos_mensuales = data_dict.get("IngresosMensuales", {})
+    
+    meses = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ]
+    x_data = meses
+    y_data = [float(ingresos_mensuales.get(mes, "0 €").replace(" €", "")) for mes in meses]
+    total_ingresos = sum(y_data)
+
+    options = {
+        "backgroundColor": "#0E1117",
+        "title": {
+            "text": f"Ingresos cliente {nombre_cliente}: {current_year} (Total: {total_ingresos} €)",
+            "left": "center"
+        },
+        "tooltip": {"trigger": "axis"},
+        "xAxis": {
+            "type": "category", 
+            "data": x_data,
+        },
+        "yAxis": {"type": "value"},
+        "series": [
+            {
+                "name": "Ingresos Mensuales",
+                "type": "bar",
+                "data": y_data,
+                "label": {
+                    "show": True,
+                    "position": "inside",
+                    "formatter": "{c} €"
+                },             
+            }
+        ],
+    }
     s = st_echarts(options=options, height="550px", theme="dark")
     if s is not None:
         st.write(s)
