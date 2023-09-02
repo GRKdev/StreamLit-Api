@@ -1,4 +1,3 @@
-# chart_utils.py
 import streamlit as st
 from streamlit_echarts import st_echarts
 
@@ -26,7 +25,7 @@ def render_pie_chart_marca(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -54,7 +53,7 @@ def render_pie_chart_fam(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -82,7 +81,7 @@ def render_pie_chart_comunidad_autonoma(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", key="render_pie_events", theme="dark")
+    s = st_echarts(options=options, height="550px", theme="dark")
     if s is not None:
         st.write(s)
 
@@ -126,7 +125,7 @@ def render_pie_chart_comunidad_autonoma_barra(data):
     if s is not None:
         st.write(s)
 
-def render_bar_chart_monthly_revenue_echarts(data):
+def render_bar_chart_monthly_revenue_echarts(data, key=None):
     data_dict = data[0] if data else {}
     
     nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
@@ -167,6 +166,6 @@ def render_bar_chart_monthly_revenue_echarts(data):
             }
         ],
     }
-    s = st_echarts(options=options, height="550px", theme="dark")
+    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
     if s is not None:
         st.write(s)
