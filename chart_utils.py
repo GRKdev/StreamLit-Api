@@ -169,3 +169,80 @@ def render_bar_chart_monthly_revenue_echarts(data, key=None):
     s = st_echarts(options=options, height="550px", key=key ,theme="dark")
     if s is not None:
         st.write(s)
+
+def render_bar_chart_monthly_revenue_currentyear(data, key=None):
+    data_dict = data[0] if data else {}
+    
+    current_year = data_dict.get("Año", "Desconocido")
+    
+    ingresos_mensuales = data_dict.get("IngresosMensuales", {})
+    
+    meses = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ]
+    x_data = meses
+    y_data = [float(ingresos_mensuales.get(mes, "0 €").replace(" €", "")) for mes in meses]
+    total_ingresos = sum(y_data)
+
+    options = {
+        "backgroundColor": "#0E1117",
+        "title": {
+            "text": f"Ingresos {current_year} (Total: {total_ingresos} €)",
+            "left": "center"
+        },
+        "tooltip": {"trigger": "axis"},
+        "xAxis": {
+            "type": "category", 
+            "data": x_data,
+        },
+        "yAxis": {"type": "value"},
+        "series": [
+            {
+                "name": "Ingresos Mensuales",
+                "type": "bar",
+                "data": y_data,
+                "label": {
+                    "show": True,
+                    "position": "inside",
+                    "formatter": "{c} €"
+                },             
+            }
+        ],
+    }
+    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
+    if s is not None:
+        st.write(s)
+
+def render_bar_chart_anual_revenue(data, key=None):
+    anuales_data = data[0]["IngresosAnuales"]
+ 
+    prepared_data = [
+        {"value": float(d["Cantidad"].split(" ")[0].replace(",", ".")), "name": str(d["Año"])}
+        for d in anuales_data
+    ]
+    
+    options = {
+        "backgroundColor": "#0E1117",
+        "title": {"text": "Ingresos Anuales", "left": "center"},
+        "tooltip": {"trigger": "item"},
+        "xAxis": {
+            "type": "category",
+            "data": [d["name"] for d in prepared_data],
+        },
+        "yAxis": {"type": "value"},
+        "series": [
+            {
+                "name": "Cantidad",
+                "type": "bar",
+                "data": [d["value"] for d in prepared_data],
+                "label": {
+                    "show": True,
+                    "position": "inside",
+                    "formatter": "{c} €"
+                },                
+            }
+        ],
+    }
+
+    st_echarts(options=options, height="550px", key=key,theme="dark")
