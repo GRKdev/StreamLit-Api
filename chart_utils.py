@@ -144,7 +144,7 @@ def render_bar_chart_monthly_revenue_echarts(data, key=None):
     options = {
         "backgroundColor": "#0E1117",
         "title": {
-            "text": f"Ingresos cliente {nombre_cliente}: {current_year} (Total: {total_ingresos} €)",
+            "text": f"Facturación cliente {nombre_cliente}: {current_year} (Total: {total_ingresos} €)",
             "left": "center"
         },
         "tooltip": {"trigger": "axis"},
@@ -188,7 +188,7 @@ def render_bar_chart_monthly_revenue_currentyear(data, key=None):
     options = {
         "backgroundColor": "#0E1117",
         "title": {
-            "text": f"Ingresos {current_year} (Total: {total_ingresos} €)",
+            "text": f"Facturación {current_year} (Total: {total_ingresos} €)",
             "left": "center"
         },
         "tooltip": {"trigger": "axis"},
@@ -218,22 +218,27 @@ def render_bar_chart_anual_revenue(data, key=None):
     anuales_data = data[0]["IngresosAnuales"]
  
     prepared_data = [
-        {"value": float(d["Cantidad"].split(" ")[0].replace(",", ".")), "name": str(d["Año"])}
+        {"value": float(d["Cantidad"].split(" ")[0].replace(",", ".")), "year": str(d["Año"])}
         for d in anuales_data
     ]
-    
+
+    total_sum = sum(d["value"] for d in prepared_data)
+
     options = {
         "backgroundColor": "#0E1117",
-        "title": {"text": "Ingresos Anuales", "left": "center"},
+        "title": {
+            "text": f"Facturaciones Anuales (Total: {total_sum} €)",
+            "left": "center"
+        },
         "tooltip": {"trigger": "item"},
         "xAxis": {
             "type": "category",
-            "data": [d["name"] for d in prepared_data],
+            "data": [d["year"] for d in prepared_data],
         },
         "yAxis": {"type": "value"},
         "series": [
             {
-                "name": "Cantidad",
+                "year": "Cantidad",
                 "type": "bar",
                 "data": [d["value"] for d in prepared_data],
                 "label": {

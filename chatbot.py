@@ -91,7 +91,21 @@ def XatBot():
         *¿Cual es el albaran 1012?*
                     
         """)
+    st.sidebar.markdown("---")  
+    st.sidebar.markdown(
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
+    unsafe_allow_html=True,
+)
+  
+    st.sidebar.write(
+            """
+            [![GitHub][github_badge]][github_link]
 
+            [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
+            [github_link]: https://github.com/GRKdev/StreamLit-Api
+            """
+            )
+        
     openai.api_key = openai_api_key
 
 

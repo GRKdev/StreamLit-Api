@@ -84,7 +84,21 @@ def show_stats_page():
                 data = response.json()
                 st.session_state.show_chart.insert(0, ("ingr", data))
 
+    st.sidebar.markdown("---")  
+    st.sidebar.markdown(
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
+    unsafe_allow_html=True,
+    )
 
+    st.sidebar.write(
+            """
+            [![GitHub][github_badge]][github_link]
+
+            [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
+            [github_link]: https://github.com/GRKdev/StreamLit-Api
+            """
+            )
+    
     for i, (chart_type, data) in enumerate(st.session_state.show_chart):
         with st.container():
             if chart_type == "marca":
