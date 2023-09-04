@@ -9,9 +9,9 @@ def XatBot():
     if 'api_key' not in st.session_state:
         st.session_state.api_key = ''
 
-    dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
+    DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
-    openai_model_ada = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
+    OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
     def ask_gpt(prompt, placeholder):
         messages_list = [
@@ -41,7 +41,7 @@ def XatBot():
 
     def ask_fine_tuned_ada(prompt):
         response = openai.Completion.create(
-            engine=openai_model_ada,
+            engine=OPEN_AI_MODEL,
             prompt=prompt,
             max_tokens=100,
             n=1,
@@ -108,11 +108,14 @@ def XatBot():
         
     openai.api_key = openai_api_key
 
-
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
     if 'welcome_message_shown' not in st.session_state:
         st.session_state.welcome_message_shown = False
+
+    for message in st.session_state.chat_history:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
     if not st.session_state.welcome_message_shown:
         with st.chat_message("assistant"):
@@ -129,10 +132,6 @@ def XatBot():
                 - ¿Cuánto son los ingresos del cliente GRK?
             """)
         st.session_state.welcome_message_shown = True
-        
-    for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
 
     user_input = st.chat_input('Ingresa tu pregunta:')
 
@@ -146,7 +145,7 @@ def XatBot():
             st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
         else:
             api_response_url = ask_fine_tuned_ada(user_input)
-            full_url = dominio + api_response_url #"http://localhost:5000/api/art_stat?stat=stat_fam"
+            full_url = DOMINIO + api_response_url #"http://localhost:5000/api/art_stat?stat=stat_fam"
             response = requests.get(full_url)
             
             with st.chat_message("assistant"):

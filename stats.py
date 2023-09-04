@@ -10,7 +10,7 @@ def show_stats_page():
     if 'show_chart' not in st.session_state:
         st.session_state.show_chart = []
     
-    dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
+    DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
     if st.button("Limpiar gráficos"):
         st.session_state.show_chart = []
@@ -18,7 +18,7 @@ def show_stats_page():
     with st.sidebar.expander("🔍 Artículos"):
         if st.button("Marca Producto", key='button_marca_producto'):
             api_response_url = "/api/art_stat?stat=stat_marca"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -26,7 +26,7 @@ def show_stats_page():
         
         if st.button("Familia Producto", key='button_familia_producto'):
             api_response_url = "/api/art_stat?stat=stat_fam"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -36,7 +36,7 @@ def show_stats_page():
 
         if st.button("Domicili Client", key='button_domicili_client'):
             api_response_url = "/api/cli_stat?stat=comu" 
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -44,7 +44,7 @@ def show_stats_page():
             
         if st.button("Client barres", key='button_client_barres'):
             api_response_url = "/api/cli_stat?stat=comu" 
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -54,7 +54,7 @@ def show_stats_page():
 
         if st.button("Facturación Anuales", key='button_ingresos_anuales'):
             api_response_url = "/api/alb_stat?total=true"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -62,7 +62,7 @@ def show_stats_page():
 
         if st.button("Facturación 2023", key='button_ingresos_current_year'):
             api_response_url = "/api/alb_stat?t_m_cy=true"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -70,7 +70,7 @@ def show_stats_page():
 
         if st.button("Facturación 2022", key='button_ingresos_selected_year'):
             api_response_url = "/api/alb_stat?t_m_y=2022"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
@@ -78,7 +78,7 @@ def show_stats_page():
 
         if st.button("Cliente GRK", key='button_key'):
             api_response_url = "/api/alb_stat?cli_mes=grk"
-            full_url = dominio + api_response_url
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
