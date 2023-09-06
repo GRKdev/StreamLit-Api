@@ -3,7 +3,8 @@ import os
 import streamlit as st
 import requests
 import re
-from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,render_bar_chart_monthly_revenue_echarts
+from chart_utils import render_pie_chart_marca, render_pie_chart_fam
+last_assistant_response = None
 
 def XatBot():
     if 'api_key' not in st.session_state:
@@ -13,14 +14,22 @@ def XatBot():
 
     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
-    def ask_gpt(prompt, placeholder):
+    def ask_gpt(prompt, placeholder, additional_context=None):
+        global last_assistant_response
         messages_list = [
             {"role": "system", "content": "Ets un assistent de la empresa GRK que respon sempre en estil MarkDown, mostra les dades relevants en Negrita. Rebràs pregunta de l'usuari juntament amb dades en format json obtingudes d'una base de dades. Has d'utilitzar ambdós per proporcionar una resposta coherent, clara i útil. Assegura't d'estructurar la informació de manera amigable i fàcil de comprendre per a l'usuari, el nom de client, article o albarà al principi. Si el json conté múltiples elements, sintetitza la informació de manera concisa. Quan tractis amb números monetaris, afegeix el simbol €."},
             {"role": "user", "content": ""},
             {"role": "assistant", "content": ""},
         ]
         
+        if last_assistant_response:
+            messages_list.append({"role": "assistant", "content": last_assistant_response})
+
+        if additional_context:
+            messages_list.append({"role": "user", "content": additional_context})
+
         messages_list.append({"role": "user", "content": prompt})
+
         full_response = ""
         
         for response in openai.ChatCompletion.create(
@@ -36,7 +45,9 @@ def XatBot():
             placeholder.markdown(full_response + "▌")
         placeholder.markdown(full_response)
         
-        return full_response.strip()
+        last_assistant_response = full_response.strip()
+        return last_assistant_response
+
 
 
     def ask_fine_tuned_ada(prompt):
@@ -162,11 +173,11 @@ def XatBot():
                                         
                 else:
                     json_response = generate_response_from_mongo_results(data)
-                    gpt_response = ask_gpt(json_response, message_placeholder)
+                    gpt_response = ask_gpt(json_response, message_placeholder,additional_context=user_input)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
                     
             else:
-                gpt_response = ask_gpt(user_input, message_placeholder)
+                gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
 
 
