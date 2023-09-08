@@ -4,7 +4,7 @@ import os
 from chart_utils import (
     render_pie_chart_marca, render_pie_chart_family, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,
     render_bar_chart_monthly_revenue_client, render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_anual_revenue,
-    render_grouped_bar_chart
+    render_grouped_bar_chart_fact, render_grouped_bar_chart_ing
 )
 def show_stats_page():
     dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
@@ -56,15 +56,15 @@ def show_stats_page():
     with st.sidebar.expander("💶 Facturación"):
 
         if st.button("Anuales agrupadas", key='button_ingresos_anuales_group'):
-            api_response_url = "/api/alb_stat?total_ym=true"
+            api_response_url = "/api/alb_stat?fact_totalgroup=true"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
                 data = response.json()
-                st.session_state.show_chart.insert(0, ("total_group", data))
+                st.session_state.show_chart.insert(0, ("total_group_fact", data))
 
         if st.button("Anuales", key='button_ingresos_anuales'):
-            api_response_url = "/api/alb_stat?total=true"
+            api_response_url = "/api/alb_stat?fact_total=true"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
@@ -72,7 +72,7 @@ def show_stats_page():
                 st.session_state.show_chart.insert(0, ("total", data))
 
         if st.button("2023", key='button_ingresos_current_year'):
-            api_response_url = "/api/alb_stat?t_m_cy=true"
+            api_response_url = "/api/alb_stat?fact_cy=true"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
@@ -80,7 +80,7 @@ def show_stats_page():
                 st.session_state.show_chart.insert(0, ("cy", data))
 
         if st.button("2022", key='button_ingresos_selected_year'):
-            api_response_url = "/api/alb_stat?t_m_y=2022"
+            api_response_url = "/api/alb_stat?fact_sy=2022"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             if response.status_code == 200:
@@ -94,6 +94,16 @@ def show_stats_page():
             if response.status_code == 200:
                 data = response.json()
                 st.session_state.show_chart.insert(0, ("ingr", data))
+
+    with st.sidebar.expander("💰 Ingresos"):
+
+        if st.button("Anuales agrupadas", key='button_ganancias_anuales_group'):
+            api_response_url = "/api/alb_stat?ing_totalgroup=true"
+            full_url = DOMINIO + api_response_url
+            response = requests.get(full_url)
+            if response.status_code == 200:
+                data = response.json()
+                st.session_state.show_chart.insert(0, ("total_group_ing", data))
 
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
@@ -128,6 +138,8 @@ def show_stats_page():
                 render_bar_chart_anual_revenue(data, key=f'render_chart_anual_{i}')                                                     
             elif chart_type == "selectedyear":
                 render_bar_chart_monthly_revenue_monthly_year(data, key=f'render_chart_total_{i}')           
-            elif chart_type == "total_group":
-                render_grouped_bar_chart(data, key=f'render_chart_anual_group_{i}')    
-                
+            elif chart_type == "total_group_fact":
+                render_grouped_bar_chart_fact(data, key=f'render_chart_anual_group_{i}')    
+            elif chart_type == "total_group_ing":
+                render_grouped_bar_chart_ing(data, key=f'render_chart_anual_group_{i}')    
+                                

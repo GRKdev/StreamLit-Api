@@ -270,14 +270,14 @@ def render_bar_chart_anual_revenue(data, key=None):
         selected_year = [d["year"] for d in prepared_data][int(s)]
         print(f"Año seleccionado: {selected_year}")
 
-        api_response_url = f"/api/alb_stat?t_m_y={selected_year}"
+        api_response_url = f"/api/alb_stat?fact_sy={selected_year}"
         full_url = DOMINIO + api_response_url
         response = requests.get(full_url)
         if response.status_code == 200:
             monthly_data = response.json()
             render_bar_chart_monthly_revenue_monthly_year(monthly_data, key=f'render_chart_total')
 
-def render_grouped_bar_chart(data, key=None):
+def render_grouped_bar_chart_fact(data, key=None):
     years = [str(d['Año']) for d in data]
     meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     
@@ -295,13 +295,15 @@ def render_grouped_bar_chart(data, key=None):
             'type': 'bar',
             'data': monthly_values,
             'markPoint': {
+                'symbol': 'pin',
                 'data': [
                     {'type': 'max', 'name': 'Max'},
                     {'type': 'min', 'name': 'Min'}
                 ]
             },
             'markLine': {
-                'data': [{'type': 'average', 'name': 'Avg'}]
+                'data': [{'type': 'average', 'name': 'Avg'}],
+                'precision': 0,
             }
         })
 
@@ -312,6 +314,70 @@ def render_grouped_bar_chart(data, key=None):
         "backgroundColor": "#0E1117",        
         'title': {
             'text': 'Facturaciones Anuales',
+            'subtext': subtext
+        },
+        'tooltip': {
+            'trigger': 'axis'
+        },
+        'legend': {
+            'data': years
+        },
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
+        'xAxis': [{
+            'type': 'category',
+            'data': meses
+        }],
+        'yAxis': [{
+            'type': 'value'
+        }],
+        'series': series_data
+    }
+
+    st_echarts(options=options, height="550px", key=key, theme="dark")
+
+def render_grouped_bar_chart_ing(data, key=None):
+    years = [str(d['Año']) for d in data]
+    meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    
+    series_data = []
+    yearly_sums = {}
+    for year_data in data:
+        year = year_data['Año']
+        monthly_data = year_data['IngresosMensuales']
+        
+        monthly_values = [float(monthly_data.get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+        yearly_sums[year] = sum(monthly_values)
+        
+        series_data.append({
+            'name': str(year),
+            'type': 'bar',
+            'data': monthly_values,
+            'markPoint': {
+                'symbol': 'pin',
+                'data': [
+                    {'type': 'max', 'name': 'Max'},
+                    {'type': 'min', 'name': 'Min'}
+                ]
+            },
+            'markLine': {
+                'data': [{'type': 'average', 'name': 'Avg'}],
+                'precision': 0,
+            }
+        })
+
+    subtext = " - ".join([f"[{year}: {total:.2f} €]" for year, total in yearly_sums.items()])
+    
+
+    options = {
+        "backgroundColor": "#0E1117",        
+        'title': {
+            'text': 'Ganancias Anuales',
             'subtext': subtext
         },
         'tooltip': {
