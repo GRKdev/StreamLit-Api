@@ -21,7 +21,6 @@ def XatBot():
             {"role": "user", "content": ""},
             {"role": "assistant", "content": ""},
         ]
-        
         if last_assistant_response:
             messages_list.append({"role": "assistant", "content": last_assistant_response})
 
@@ -46,9 +45,8 @@ def XatBot():
         placeholder.markdown(full_response)
         
         last_assistant_response = full_response.strip()
+
         return last_assistant_response
-
-
 
     def ask_fine_tuned_ada(prompt):
         response = openai.Completion.create(
@@ -89,8 +87,6 @@ def XatBot():
         if openai_api_key:
             st.session_state.api_key = openai_api_key
             
-    # openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-
     with st.sidebar.expander("🧩 Exemples", False):
         st.markdown("""
         *Dona'm info del client GRK*
@@ -107,7 +103,6 @@ def XatBot():
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
-  
     st.sidebar.write(
             """
             [![GitHub][github_badge]][github_link]
@@ -116,7 +111,6 @@ def XatBot():
             [github_link]: https://github.com/GRKdev/StreamLit-Api
             """
             )
-        
     openai.api_key = openai_api_key
 
     if 'chat_history' not in st.session_state:
@@ -146,7 +140,6 @@ def XatBot():
 
     user_input = st.chat_input('Ingresa tu pregunta:')
 
-
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
@@ -156,7 +149,7 @@ def XatBot():
             st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
         else:
             api_response_url = ask_fine_tuned_ada(user_input)
-            full_url = DOMINIO + api_response_url #"http://localhost:5000/api/art_stat?stat=stat_fam"
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             
             with st.chat_message("assistant"):
@@ -175,7 +168,6 @@ def XatBot():
                     json_response = generate_response_from_mongo_results(data)
                     gpt_response = ask_gpt(json_response, message_placeholder,additional_context=user_input)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-                    
             else:
                 gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
