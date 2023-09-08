@@ -1,3 +1,5 @@
 openai
 streamlit
 streamlit_echarts
+llama-index
+nltk

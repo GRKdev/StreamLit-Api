@@ -120,7 +120,7 @@ def XatBot():
         with st.spinner(text="Cargando los archivos de datos – espere! Deberia tardar entre 1-2 minutos."):
             reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
             docs = reader.load_data()
-            service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.3, system_prompt="Contestarás en sempre en el idioma català. Ets un assitent personal que respondràs les preguntes del usuari. Seràs servicial i educat, donaràs info que sapiguis de la empresa, del chatbot i dels documents."))
+            service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="Contestarás en sempre en el idioma català. Ets un assitent personal que respondràs les preguntes del usuari. Seràs servicial i educat, donaràs info que sapiguis de la empresa, del chatbot i dels documents."))
             index = VectorStoreIndex.from_documents(docs, service_context=service_context)
             return index
 
@@ -137,7 +137,6 @@ def XatBot():
     for message in st.session_state.chat_history:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
 
     if not st.session_state.welcome_message_shown:
         with st.chat_message("assistant"):
@@ -161,35 +160,36 @@ def XatBot():
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.markdown(user_input)
-        
+
         if not openai_api_key.startswith('sk-'):
             st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
         else:
             api_response_url = ask_fine_tuned_ada(user_input)
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
-            
+            response_llama = chat_engine.stream_chat(user_input)
+
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
-            
+
             if response.status_code == 200:
                 data = response.json()
-                
+
                 if "/api/art_stat?stat=stat_marca" in api_response_url:
                     render_pie_chart_marca(data)
 
                 if "/api/art_stat?stat=stat_fam" in api_response_url:
                     render_pie_chart_fam(data)
-                                        
+
                 else:
                     json_response = generate_response_from_mongo_results(data)
-                    gpt_response = ask_gpt(json_response, message_placeholder,additional_context=user_input)
+                    gpt_response = ask_gpt(json_response, message_placeholder, additional_context=user_input)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-                    
+
             else:
-                with st.chat_message("assistant"):
-                    with st.spinner("Pensando..."):
-                        response = chat_engine.chat(user_input)
-                        st.write(response.response)
-                        message = {"role": "assistant", "content": response.response}
-                        st.session_state.chat_history.append(message)
+                output = ""
+                for token in response_llama.response_gen:
+                    output += token  # Acumulo cada token en una cadena
+                    message_placeholder.markdown(output)  # Actualizo el contenedor con la nueva cadena
+
+                st.session_state.chat_history.append({"role": "assistant", "content": response_llama.response})
