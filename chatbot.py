@@ -3,7 +3,11 @@ import os
 import streamlit as st
 import requests
 import re
+from llama_index import VectorStoreIndex, ServiceContext, Document
+from llama_index.llms import OpenAI
+from llama_index import SimpleDirectoryReader
 from chart_utils import render_pie_chart_marca, render_pie_chart_fam
+
 last_assistant_response = None
 
 def XatBot():
@@ -11,17 +15,15 @@ def XatBot():
         st.session_state.api_key = ''
 
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-
     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
     def ask_gpt(prompt, placeholder, additional_context=None):
         global last_assistant_response
         messages_list = [
-            {"role": "system", "content": "Ets un assistent de la empresa GRK que respon sempre en estil MarkDown, mostra les dades relevants en Negrita. Rebràs pregunta de l'usuari juntament amb dades en format json obtingudes d'una base de dades. Has d'utilitzar ambdós per proporcionar una resposta coherent, clara i útil. Assegura't d'estructurar la informació de manera amigable i fàcil de comprendre per a l'usuari, el nom de client, article o albarà al principi. Si el json conté múltiples elements, sintetitza la informació de manera concisa. Quan tractis amb números monetaris, afegeix el simbol €."},
+            {"role": "system", "content": "Ets un assistent de la empresa GRK que respon sempre en estil MarkDown, mostra les dades relevants en Negrita. No expliquis com realitzar calculs, dona la resposta directament. Rebràs pregunta de l'usuari juntament amb dades obtingudes d'una base de dades. Has d'utilitzar ambdós per proporcionar una resposta coherent, clara i útil. Assegura't d'estructurar la informació de manera amigable i fàcil de comprendre per a l'usuari, el nom de client, article o albarà al principi. Si el json conté múltiples elements, sintetitza la informació de manera concisa. Quan tractis amb números monetaris, afegeix el simbol €."},
             {"role": "user", "content": ""},
             {"role": "assistant", "content": ""},
         ]
-        
         if last_assistant_response:
             messages_list.append({"role": "assistant", "content": last_assistant_response})
 
@@ -29,13 +31,12 @@ def XatBot():
             messages_list.append({"role": "user", "content": additional_context})
 
         messages_list.append({"role": "user", "content": prompt})
-
         full_response = ""
         
         for response in openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=messages_list,
-            max_tokens=500,
+            max_tokens=1000,
             n=1,
             stop=None,
             temperature=0.2,
@@ -47,8 +48,6 @@ def XatBot():
         
         last_assistant_response = full_response.strip()
         return last_assistant_response
-
-
 
     def ask_fine_tuned_ada(prompt):
         response = openai.Completion.create(
@@ -89,8 +88,6 @@ def XatBot():
         if openai_api_key:
             st.session_state.api_key = openai_api_key
             
-    # openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-
     with st.sidebar.expander("🧩 Exemples", False):
         st.markdown("""
         *Dona'm info del client GRK*
@@ -104,10 +101,9 @@ def XatBot():
         """)
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
-  
     st.sidebar.write(
             """
             [![GitHub][github_badge]][github_link]
@@ -119,14 +115,29 @@ def XatBot():
         
     openai.api_key = openai_api_key
 
+    @st.cache_resource(show_spinner=False)
+    def load_data():
+        with st.spinner(text="Cargando los archivos de datos – espere! Deberia tardar entre 1-2 minutos."):
+            reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
+            docs = reader.load_data()
+            service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.3, system_prompt="Contestarás en sempre en el idioma català. Ets un assitent personal que respondràs les preguntes del usuari. Seràs servicial i educat, donaràs info que sapiguis de la empresa, del chatbot i dels documents."))
+            index = VectorStoreIndex.from_documents(docs, service_context=service_context)
+            return index
+
+    index = load_data()
+
+    chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
+
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
+        
     if 'welcome_message_shown' not in st.session_state:
         st.session_state.welcome_message_shown = False
 
     for message in st.session_state.chat_history:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
+
 
     if not st.session_state.welcome_message_shown:
         with st.chat_message("assistant"):
@@ -146,7 +157,6 @@ def XatBot():
 
     user_input = st.chat_input('Ingresa tu pregunta:')
 
-
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
@@ -156,7 +166,7 @@ def XatBot():
             st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
         else:
             api_response_url = ask_fine_tuned_ada(user_input)
-            full_url = DOMINIO + api_response_url #"http://localhost:5000/api/art_stat?stat=stat_fam"
+            full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
             
             with st.chat_message("assistant"):
@@ -177,7 +187,9 @@ def XatBot():
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
                     
             else:
-                gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
-                st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-
-
+                with st.chat_message("assistant"):
+                    with st.spinner("Pensando..."):
+                        response = chat_engine.chat(user_input)
+                        st.write(response.response)
+                        message = {"role": "assistant", "content": response.response}
+                        st.session_state.chat_history.append(message)
