@@ -94,7 +94,15 @@ def XatBot():
         *telefono de Maria Lopez*
                     
         *¿Cual es el albaran 1012?*
+        
+        *Cual es el albarán 1014*
                     
+        *tlf de clientes GRK y Pepito*
+        
+        *toda info articulo Razer Blackwidow*
+
+        *Precio Venta articulo MacBook Air*
+                                
         """)
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
@@ -131,8 +139,10 @@ def XatBot():
                 - Dame el teléfono de John Doe.
                 - Dame toda la info del cliente Pepito Grillo.
                 - Info del artículo 1009.
-                - Dame toda la info del albarán 1014.
+                - Cual es el albarán 1014.
                 - ¿Cuánto son los ingresos del cliente GRK?
+                - Dame los telefonos de los clientes GRK i Pepito
+                - Info Articles MacBook Air i Razer Black
             """)
         st.session_state.welcome_message_shown = True
 
@@ -163,10 +173,12 @@ def XatBot():
                     render_pie_chart_fam(data)
                                         
                 else:
+                    st.markdown("```⚠ chatbot finetuned```")
                     json_response = generate_response_from_mongo_results(data)
                     gpt_response = ask_gpt(json_response, message_placeholder,additional_context=user_input)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
             else:
+                st.markdown("```⚠ chatbot general```")
                 gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
 
