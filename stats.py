@@ -1,8 +1,11 @@
 import streamlit as st
 import requests
 import os
-from chart_utils import render_pie_chart_marca, render_pie_chart_fam, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,render_bar_chart_monthly_revenue_echarts, render_bar_chart_monthly_revenue_currentyear, render_bar_chart_anual_revenue
-
+from chart_utils import (
+    render_pie_chart_marca, render_pie_chart_family, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,
+    render_bar_chart_monthly_revenue_client, render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_anual_revenue,
+    render_grouped_bar_chart
+)
 def show_stats_page():
     dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
     
@@ -52,7 +55,15 @@ def show_stats_page():
 
     with st.sidebar.expander("💶 Facturación"):
 
-        if st.button("Facturación Anuales", key='button_ingresos_anuales'):
+        if st.button("Anuales agrupadas", key='button_ingresos_anuales_group'):
+            api_response_url = "/api/alb_stat?total_ym=true"
+            full_url = DOMINIO + api_response_url
+            response = requests.get(full_url)
+            if response.status_code == 200:
+                data = response.json()
+                st.session_state.show_chart.insert(0, ("total_group", data))
+
+        if st.button("Anuales", key='button_ingresos_anuales'):
             api_response_url = "/api/alb_stat?total=true"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
@@ -60,7 +71,7 @@ def show_stats_page():
                 data = response.json()
                 st.session_state.show_chart.insert(0, ("total", data))
 
-        if st.button("Facturación 2023", key='button_ingresos_current_year'):
+        if st.button("2023", key='button_ingresos_current_year'):
             api_response_url = "/api/alb_stat?t_m_cy=true"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
@@ -68,7 +79,7 @@ def show_stats_page():
                 data = response.json()
                 st.session_state.show_chart.insert(0, ("cy", data))
 
-        if st.button("Facturación 2022", key='button_ingresos_selected_year'):
+        if st.button("2022", key='button_ingresos_selected_year'):
             api_response_url = "/api/alb_stat?t_m_y=2022"
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
@@ -104,18 +115,19 @@ def show_stats_page():
             if chart_type == "marca":
                 render_pie_chart_marca(data)
             elif chart_type == "fam":
-                render_pie_chart_fam(data)
+                render_pie_chart_family(data)
             elif chart_type == "cli":
                 render_pie_chart_comunidad_autonoma(data)                
             elif chart_type == "cli_barras":
                 render_pie_chart_comunidad_autonoma_barra(data)     
             elif chart_type == "ingr":
-                render_bar_chart_monthly_revenue_echarts(data, key=f'render_chart_client_{i}')                                     
+                render_bar_chart_monthly_revenue_client(data, key=f'render_chart_client_{i}')                                     
             elif chart_type == "cy":
-                render_bar_chart_monthly_revenue_currentyear(data, key=f'render_chart_cy_{i}')                                                     
+                render_bar_chart_monthly_revenue_monthly_year(data, key=f'render_chart_cy_{i}')                                                     
             elif chart_type == "total":
                 render_bar_chart_anual_revenue(data, key=f'render_chart_anual_{i}')                                                     
             elif chart_type == "selectedyear":
-                render_bar_chart_monthly_revenue_currentyear(data, key=f'render_chart_total_{i}')           
-
+                render_bar_chart_monthly_revenue_monthly_year(data, key=f'render_chart_total_{i}')           
+            elif chart_type == "total_group":
+                render_grouped_bar_chart(data, key=f'render_chart_anual_group_{i}')    
                 

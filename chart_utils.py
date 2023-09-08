@@ -34,7 +34,7 @@ def render_pie_chart_marca(data):
     if s is not None:
         st.write(s)
 
-def render_pie_chart_fam(data):
+def render_pie_chart_family(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Familia"]} for d in data]
     
     options = {
@@ -130,7 +130,7 @@ def render_pie_chart_comunidad_autonoma_barra(data):
     if s is not None:
         st.write(s)
 
-def render_bar_chart_monthly_revenue_echarts(data, key=None):
+def render_bar_chart_monthly_revenue_client(data, key=None):
     data_dict = data[0] if data else {}
     
     nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
@@ -175,7 +175,7 @@ def render_bar_chart_monthly_revenue_echarts(data, key=None):
     if s is not None:
         st.write(s)
 
-def render_bar_chart_monthly_revenue_currentyear(data, key=None):
+def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
     data_dict = data[0] if data else {}
     
     current_year = data_dict.get("Año", "Desconocido")
@@ -266,9 +266,6 @@ def render_bar_chart_anual_revenue(data, key=None):
 
     s = st_echarts(options=options, events=events, height="550px", key=key, theme="dark")
     
-    if 'saved_charts' not in st.session_state:
-        st.session_state.saved_charts = []
-
     if s is not None:
         selected_year = [d["year"] for d in prepared_data][int(s)]
         print(f"Año seleccionado: {selected_year}")
@@ -278,5 +275,66 @@ def render_bar_chart_anual_revenue(data, key=None):
         response = requests.get(full_url)
         if response.status_code == 200:
             monthly_data = response.json()
-            render_bar_chart_monthly_revenue_currentyear(monthly_data, key=f'render_chart_total')   
-            
+            render_bar_chart_monthly_revenue_monthly_year(monthly_data, key=f'render_chart_total')
+
+def render_grouped_bar_chart(data, key=None):
+    years = [str(d['Año']) for d in data]
+    meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    
+    series_data = []
+    yearly_sums = {}
+    for year_data in data:
+        year = year_data['Año']
+        monthly_data = year_data['IngresosMensuales']
+        
+        monthly_values = [float(monthly_data.get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+        yearly_sums[year] = sum(monthly_values)
+        
+        series_data.append({
+            'name': str(year),
+            'type': 'bar',
+            'data': monthly_values,
+            'markPoint': {
+                'data': [
+                    {'type': 'max', 'name': 'Max'},
+                    {'type': 'min', 'name': 'Min'}
+                ]
+            },
+            'markLine': {
+                'data': [{'type': 'average', 'name': 'Avg'}]
+            }
+        })
+
+    subtext = " - ".join([f"[{year}: {total:.2f} €]" for year, total in yearly_sums.items()])
+    
+
+    options = {
+        "backgroundColor": "#0E1117",        
+        'title': {
+            'text': 'Facturaciones Anuales',
+            'subtext': subtext
+        },
+        'tooltip': {
+            'trigger': 'axis'
+        },
+        'legend': {
+            'data': years
+        },
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
+        'xAxis': [{
+            'type': 'category',
+            'data': meses
+        }],
+        'yAxis': [{
+            'type': 'value'
+        }],
+        'series': series_data
+    }
+
+    st_echarts(options=options, height="550px", key=key, theme="dark")

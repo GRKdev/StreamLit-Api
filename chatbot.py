@@ -3,7 +3,7 @@ import os
 import streamlit as st
 import requests
 import re
-from chart_utils import render_pie_chart_marca, render_pie_chart_fam
+from chart_utils import render_pie_chart_marca, render_pie_chart_family
 last_assistant_response = None
 
 def XatBot():
@@ -170,7 +170,7 @@ def XatBot():
                     render_pie_chart_marca(data)
 
                 if "/api/art_stat?stat=stat_fam" in api_response_url:
-                    render_pie_chart_fam(data)
+                    render_pie_chart_family(data)
                                         
                 else:
                     st.markdown("```⚠ chatbot finetuned```")
