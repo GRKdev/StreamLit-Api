@@ -9,7 +9,7 @@ def show_stats_page():
 def show_stats_page():
     if 'show_chart' not in st.session_state:
         st.session_state.show_chart = []
-    
+
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
     if st.button("Limpiar gráficos"):
@@ -49,7 +49,7 @@ def show_stats_page():
             if response.status_code == 200:
                 data = response.json()
                 st.session_state.show_chart.insert(0, ("cli_barras", data))
-                  
+
     with st.sidebar.expander("💶 Facturación"):
 
         if st.button("Facturación Anuales", key='button_ingresos_anuales'):
@@ -86,7 +86,7 @@ def show_stats_page():
 
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="10">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
     unsafe_allow_html=True,
     )
 

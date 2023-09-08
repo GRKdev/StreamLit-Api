@@ -1,5 +1,10 @@
 import streamlit as st
 from streamlit_echarts import st_echarts
+import os
+import requests
+
+if 'saved_charts' not in st.session_state:
+        st.session_state.saved_charts = []  
 
 def render_pie_chart_marca(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Marca"]} for d in data]
@@ -214,9 +219,14 @@ def render_bar_chart_monthly_revenue_currentyear(data, key=None):
     if s is not None:
         st.write(s)
 
+DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
+if 'show_chart' not in st.session_state:
+    st.session_state.show_chart = []
+
 def render_bar_chart_anual_revenue(data, key=None):
+    
     anuales_data = data[0]["IngresosAnuales"]
- 
+
     prepared_data = [
         {"value": float(d["Cantidad"].split(" ")[0].replace(",", ".")), "year": str(d["Año"])}
         for d in anuales_data
@@ -245,9 +255,28 @@ def render_bar_chart_anual_revenue(data, key=None):
                     "show": True,
                     "position": "inside",
                     "formatter": "{c} €"
-                },                
+                },
             }
         ],
     }
 
-    st_echarts(options=options, height="550px", key=key,theme="dark")
+    events = {
+        "click": "function(params) { return params.dataIndex; }"
+    }
+
+    s = st_echarts(options=options, events=events, height="550px", key=key, theme="dark")
+    
+    if 'saved_charts' not in st.session_state:
+        st.session_state.saved_charts = []
+
+    if s is not None:
+        selected_year = [d["year"] for d in prepared_data][int(s)]
+        print(f"Año seleccionado: {selected_year}")
+
+        api_response_url = f"/api/alb_stat?t_m_y={selected_year}"
+        full_url = DOMINIO + api_response_url
+        response = requests.get(full_url)
+        if response.status_code == 200:
+            monthly_data = response.json()
+            render_bar_chart_monthly_revenue_currentyear(monthly_data, key=f'render_chart_total')   
+            
