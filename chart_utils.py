@@ -179,6 +179,55 @@ def render_bar_chart_monthly_revenue_client(data, key=None):
     if s is not None:
         st.write(s)
 
+def render_bar_chart_monthly_revenue_client_ing(data, key=None):
+    data_dict = data[0] if data else {}
+    
+    nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
+    current_year = data_dict.get("Año", "Desconocido")
+    
+    ingresos_mensuales = data_dict.get("IngresosMensuales", {})
+    
+    meses = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ]
+    x_data = meses
+    y_data = [float(ingresos_mensuales.get(mes, "0 €").replace(" €", "")) for mes in meses]
+    total_ingresos = round(sum(y_data), 2)
+
+    options = {
+        "backgroundColor": "#0E1117",
+        "title": {
+            "text": f"Ganancias del cliente {nombre_cliente}: {current_year} (Total: {total_ingresos} €)",
+            "left": "center"
+        },
+        "tooltip": {"trigger": "axis"},
+        "xAxis": {
+            "type": "category", 
+            "data": x_data,
+        },
+        "yAxis": {"type": "value"},
+        "series": [
+            {
+                "name": "Ingresos Mensuales",
+                "type": "bar",
+                "data": y_data,
+                "label": {
+                    "show": True,
+                    "position": "inside",
+                    "formatter": "{c} €"
+                },             
+                'markLine': {
+                    'data': [{'type': 'average', 'name': 'Avg'}],
+                    'precision': 2,
+                }
+            }
+        ],
+    }
+    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
+    if s is not None:
+        st.write(s)
+
 def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
     data_dict = data[0] if data else {}
     
@@ -236,6 +285,66 @@ def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
     if s is not None:
         st.write(s)
 
+
+def render_bar_chart_monthly_revenue_monthly_year_ing(data, key=None):
+    data_dict = data[0] if data else {}
+    
+    current_year = data_dict.get("Año", "Desconocido")
+    
+    ingresos_mensuales = data_dict.get("IngresosMensuales", {})
+    
+    meses = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ]
+    x_data = meses
+    y_data = [float(ingresos_mensuales.get(mes, "0 €").replace(" €", "")) for mes in meses]
+    total_ingresos = round(sum(y_data), 2)
+
+    options = {
+        "backgroundColor": "#0E1117",
+        "title": {
+            "text": f"Ganancias {current_year} (Total: {total_ingresos} €)",
+            "left": "center"
+        },
+        "tooltip": {"trigger": "axis"},
+        "xAxis": {
+            "type": "category", 
+            "data": x_data,
+        },
+        "yAxis": {"type": "value"},
+
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
+        "series": [
+            {
+                "name": "Ingresos Mensuales",
+                "type": "bar",
+                "data": y_data,
+                "label": {
+                    "show": True,
+                    "position": "inside",
+                    "formatter": "{c} €"
+                },  
+                'markLine': {
+                    'data': [{'type': 'average', 'name': 'Avg'}],
+                    'precision': 2,
+                },
+                           
+            }
+        ],
+    }
+    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
+    if s is not None:
+        st.write(s)
+
+
+###############
 DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 if 'show_chart' not in st.session_state:
     st.session_state.show_chart = []
@@ -292,6 +401,7 @@ def render_bar_chart_anual_revenue(data, key=None):
         if response.status_code == 200:
             monthly_data = response.json()
             render_bar_chart_monthly_revenue_monthly_year(monthly_data, key=f'render_chart_total')
+##################
 
 def render_grouped_bar_chart_fact(data, key=None):
     years = [str(d['Año']) for d in data]
