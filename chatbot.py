@@ -3,16 +3,16 @@ import os
 import streamlit as st
 import requests
 import re
+from key_check import check_for_openai_key, run_key_check_loop
 from chart_utils import render_pie_chart_marca, render_pie_chart_family
+
 last_assistant_response = None
 
 def XatBot():
-    if 'api_key' not in st.session_state:
-        st.session_state.api_key = ''
-
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-
     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
+    openai.api_key = st.secrets.get("OPENAI_API_KEY")
+
 
     def ask_gpt(prompt, placeholder, additional_context=None):
         global last_assistant_response
@@ -77,15 +77,23 @@ def XatBot():
     
     st.title('XatBot API NOSQL')
 
-    if st.session_state.api_key:
-        openai_api_key = st.session_state.api_key 
-    else:
-        openai_api_key = st.sidebar.text_input('🔑 OpenAI API Key', type='password')
+    st.info(
+        """
+        **Bienvenido al chatbot de GRK 👋**
 
-        if openai_api_key:
-            st.session_state.api_key = openai_api_key
+        Puedes hacer preguntas del estilo:
+        - ¿Quién es el cliente GRK?
+        - Dame el teléfono de John Doe.
+        - Dame toda la info del cliente Pepito Grillo.
+        - Info del artículo 1009.
+        - Cual es el albarán 1014.
+        - ¿Cuánto son los ingresos del cliente GRK?
+        - Dame los telefonos de los clientes GRK i Pepito
+        - Info Articles MacBook Air i Razer Black
+        """
+    )
             
-    with st.sidebar.expander("🧩 Exemples", False):
+    with st.sidebar.expander("🧩 Ejemplos", False):
         st.markdown("""
         *Dona'm info del client GRK*
                     
@@ -106,7 +114,7 @@ def XatBot():
         """)
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
     st.sidebar.write(
@@ -117,49 +125,26 @@ def XatBot():
             [github_link]: https://github.com/GRKdev/StreamLit-Api
             """
             )
-    openai.api_key = openai_api_key
+    
+    if run_key_check_loop(): 
 
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-    if 'welcome_message_shown' not in st.session_state:
-        st.session_state.welcome_message_shown = False
+        if 'chat_history' not in st.session_state:
+            st.session_state.chat_history = []
+        for message in st.session_state.chat_history:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
 
-    for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        user_input = st.chat_input('Ingresa tu pregunta:')
+    
+        if user_input:
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
+            with st.chat_message("user"):
+                st.markdown(user_input)
 
-    if not st.session_state.welcome_message_shown:
-        with st.chat_message("assistant"):
-            st.markdown("""
-                Bienvenido al chatbot de GRK 👋.  
-                Deberás poner tu clave de API de OpenAI en el menú de la izquierda.  
-                
-                Puedes hacer preguntas del estilo:
-                - ¿Quién es el cliente GRK?
-                - Dame el teléfono de John Doe.
-                - Dame toda la info del cliente Pepito Grillo.
-                - Info del artículo 1009.
-                - Cual es el albarán 1014.
-                - ¿Cuánto son los ingresos del cliente GRK?
-                - Dame los telefonos de los clientes GRK i Pepito
-                - Info Articles MacBook Air i Razer Black
-            """)
-        st.session_state.welcome_message_shown = True
-
-    user_input = st.chat_input('Ingresa tu pregunta:')
-
-    if user_input:
-        st.session_state.chat_history.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.markdown(user_input)
-        
-        if not openai_api_key.startswith('sk-'):
-            st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
-        else:
             api_response_url = ask_fine_tuned_ada(user_input)
             full_url = DOMINIO + api_response_url
             response = requests.get(full_url)
-            
+
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
             
@@ -175,11 +160,9 @@ def XatBot():
                 else:
                     st.markdown("```⚠ chatbot finetuned```")
                     json_response = generate_response_from_mongo_results(data)
-                    gpt_response = ask_gpt(json_response, message_placeholder,additional_context=user_input)
+                    gpt_response = ask_gpt(json_response, message_placeholder, additional_context=user_input)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
             else:
                 st.markdown("```⚠ chatbot general```")
                 gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-
-
