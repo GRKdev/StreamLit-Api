@@ -4,8 +4,7 @@ import streamlit as st
 import requests
 import re
 from key_check import run_key_check_loop
-from chatbot_utils import handle_chat_message, ask_gpt, render_grouped_bar_chart_fact
-
+from chatbot_utils import handle_chat_message, ask_gpt
 
 def XatBot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
@@ -69,22 +68,19 @@ def XatBot():
         *toda info articulo Razer Blackwidow*
 
         *Precio Venta articulo MacBook Air*
-                                
+        
+        *Facturacion total*
+
+        *Ganancias totales*
+
+        *Quien ha creado el chatbot?*            
         """)
     st.sidebar.markdown("---")  
     st.sidebar.markdown(
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
-    st.sidebar.write(
-            """
-            [![GitHub][github_badge]][github_link]
-
-            [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
-            [github_link]: https://github.com/GRKdev/StreamLit-Api
-            """
-            )
-    
+   
     if run_key_check_loop():
         st.session_state.chat_history = st.session_state.get('chat_history', [])
         for message in st.session_state.chat_history:

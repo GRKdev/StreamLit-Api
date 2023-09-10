@@ -7,9 +7,7 @@ from chart_utils import (
     render_grouped_bar_chart_fact, render_grouped_bar_chart_ing, render_bar_chart_monthly_revenue_monthly_year_ing,
     render_bar_chart_monthly_revenue_client_ing
 )
-def show_stats_page():
-    dominio = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-    
+
 def show_stats_page():
     if 'show_chart' not in st.session_state:
         st.session_state.show_chart = []
@@ -135,16 +133,7 @@ def show_stats_page():
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
     unsafe_allow_html=True,
     )
-
-    st.sidebar.write(
-            """
-            [![GitHub][github_badge]][github_link]
-
-            [github_badge]: https://badgen.net/badge/icon/GitHub?icon=github&color=black&label
-            [github_link]: https://github.com/GRKdev/StreamLit-Api
-            """
-            )
-    
+   
     for i, (chart_type, data) in enumerate(st.session_state.show_chart):
         with st.container():
             if chart_type == "marca":
