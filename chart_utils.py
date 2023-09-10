@@ -153,6 +153,13 @@ def render_bar_chart_monthly_revenue_client(data, key=None):
             "left": "center"
         },
         "tooltip": {"trigger": "axis"},
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
         "xAxis": {
             "type": "category", 
             "data": x_data,
@@ -166,12 +173,32 @@ def render_bar_chart_monthly_revenue_client(data, key=None):
                 "label": {
                     "show": True,
                     "position": "inside",
-                    "formatter": "{c} €"
-                },             
+                    "fontSize": 12,
+                    "formatter": "{c} €",
+                    "color": "#FFFFFF",
+                    "align": "middle",
+                    "verticalAlign": "middle",
+                    "backgroundColor": "#000000",
+                    "borderRadius": 8,
+                    "padding": [3, 4],
+                },
+      
+                'markPoint': {
+                    'symbol': 'pin',
+                    'symbolSize': 40,
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ],
+                    'label': {
+                        'show': False
+                    }
+                },     
                 'markLine': {
                     'data': [{'type': 'average', 'name': 'Avg'}],
                     'precision': 2,
                 }
+
             }
         ],
     }
@@ -202,6 +229,13 @@ def render_bar_chart_monthly_revenue_client_ing(data, key=None):
             "left": "center"
         },
         "tooltip": {"trigger": "axis"},
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
         "xAxis": {
             "type": "category", 
             "data": x_data,
@@ -216,7 +250,17 @@ def render_bar_chart_monthly_revenue_client_ing(data, key=None):
                     "show": True,
                     "position": "inside",
                     "formatter": "{c} €"
-                },             
+                },
+                "itemStyle": {
+                "color": "#90EE90"
+                },    
+                'markPoint': {
+                    'symbol': 'pin',
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ]
+                },                         
                 'markLine': {
                     'data': [{'type': 'average', 'name': 'Avg'}],
                     'precision': 2,
@@ -273,6 +317,13 @@ def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
                     "position": "inside",
                     "formatter": "{c} €"
                 },  
+                'markPoint': {
+                    'symbol': 'pin',
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ]
+                },                
                 'markLine': {
                     'data': [{'type': 'average', 'name': 'Avg'}],
                     'precision': 2,
@@ -330,7 +381,17 @@ def render_bar_chart_monthly_revenue_monthly_year_ing(data, key=None):
                     "show": True,
                     "position": "inside",
                     "formatter": "{c} €"
+                },
+                "itemStyle": {
+            "color": "#90EE90"
                 },  
+                'markPoint': {
+                    'symbol': 'pin',
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ]
+                },                
                 'markLine': {
                     'data': [{'type': 'average', 'name': 'Avg'}],
                     'precision': 2,
