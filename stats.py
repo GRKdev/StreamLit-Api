@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import os
-from chart_utils import (
+from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family, render_pie_chart_comunidad_autonoma, render_pie_chart_comunidad_autonoma_barra,
     render_bar_chart_monthly_revenue_client, render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_anual_revenue,
     render_grouped_bar_chart_fact, render_grouped_bar_chart_ing, render_bar_chart_monthly_revenue_monthly_year_ing,

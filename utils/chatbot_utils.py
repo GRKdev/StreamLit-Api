@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 
-from chart_utils import (
+from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family,render_grouped_bar_chart_fact,
     render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_monthly_revenue_client,
     render_bar_chart_monthly_revenue_client_ing, render_grouped_bar_chart_ing,

@@ -3,8 +3,9 @@ import os
 import streamlit as st
 import requests
 import re
-from key_check import run_key_check_loop
-from chatbot_utils import handle_chat_message, ask_gpt
+from utils.generate_token import create_jwt
+from utils.key_check import run_key_check_loop
+from utils.chatbot_utils import handle_chat_message, ask_gpt
 
 def XatBot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
@@ -85,7 +86,7 @@ def XatBot():
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
-   
+    token = create_jwt()
     if run_key_check_loop():
         st.session_state.chat_history = st.session_state.get('chat_history', [])
         for message in st.session_state.chat_history:
@@ -101,7 +102,8 @@ def XatBot():
 
             api_response_url = ask_fine_tuned_ada(user_input)
             full_url = DOMINIO + api_response_url
-            response = requests.get(full_url)
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.get(full_url, headers=headers)
 
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
