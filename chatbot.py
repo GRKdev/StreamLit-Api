@@ -27,7 +27,7 @@ def XatBot():
         if match:
             sanitized_response = match.group(0)
         else:
-            sanitized_response = ""
+            sanitized_response = api_response
 
         print(f"Sanitized Response: {sanitized_response}")
 
@@ -106,5 +106,9 @@ def XatBot():
                 handle_chat_message(api_response_url, data, message_placeholder, user_input)
             else:
                 st.markdown("```⚠ chatbot general```")
-                gpt_response = ask_gpt(user_input, message_placeholder, additional_context=user_input)
+                additional_context = {
+                    "previous_response": user_input,
+                    "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None
+                }
+                gpt_response = ask_gpt(user_input, message_placeholder, additional_context=additional_context)
                 st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})

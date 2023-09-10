@@ -19,8 +19,15 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         messages_list.append({"role": "assistant", "content": last_assistant_response})
 
     if additional_context:
-        messages_list.append({"role": "user", "content": additional_context})
+        fine_tuned_result = additional_context.get("fine_tuned_result")
+        if fine_tuned_result:
+            messages_list.append({"role": "assistant", "content": f"Resultado de fine_tuned: {fine_tuned_result}"})
+            
+        previous_response = additional_context.get("previous_response")
+        if previous_response:
+            messages_list.append({"role": "user", "content": previous_response})
 
+    messages_list.append({"role": "user", "content": prompt})
     messages_list.append({"role": "user", "content": prompt})
 
     full_response = ""
@@ -45,8 +52,13 @@ def ask_gpt(prompt, placeholder, additional_context=None):
 def default_handler(data, message_placeholder, user_input):
     st.markdown("```⚠ chatbot finetuned```")
     json_response = generate_response_from_mongo_results(data)
-    gpt_response = ask_gpt(json_response, message_placeholder, additional_context=user_input)
+    additional_context = {
+        "previous_response": user_input,
+        "fine_tuned_result": None
+    }
+    gpt_response = ask_gpt(json_response, message_placeholder, additional_context=additional_context)
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+
 
 def handle_chat_message(api_response_url, data, message_placeholder, user_input):
     api_to_function_map = {
