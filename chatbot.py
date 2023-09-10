@@ -37,19 +37,21 @@ def XatBot():
 
     st.info(
         """
-        **Bienvenido al chatbot de GRK 👋**
+        **Bienvenido al chatbot de GRK**
 
         Puedes hacer preguntas del estilo:
+        - ¿Cómo funciona el chat?
         - ¿Quién es el cliente GRK?
-        - Dame el teléfono de John Doe.
-        - Dame toda la info del cliente Pepito Grillo.
-        - Info del artículo 1009.
-        - Cual es el albarán 1014.
+        - Dame el teléfono de John Doe
+        - Dame toda la info del cliente Pepito Grillo
+        - Info del artículo 1009
+        - Cual es el albarán 1014
         - ¿Cuánto son los ingresos del cliente GRK?
-        - Dame los telefonos de los clientes GRK i Pepito
+        - Dame los telefonos de los clientes GRK y Global Data
         - Info Articles MacBook Air i Razer Black
-        """
-    )
+        - 193134010546 (poner un código de barras)
+        """, icon="👋" 
+        )
             
     with st.sidebar.expander("🧩 Ejemplos", False):
         st.markdown("""
@@ -73,9 +75,12 @@ def XatBot():
 
         *Ganancias totales*
 
-        *Quien ha creado el chatbot?*            
+        *Quien ha creado el chatbot?*
+
+        *Facturación cliente GRK Tech*                                 
         """)
-    st.sidebar.markdown("---")  
+
+    st.sidebar.divider()  
     st.sidebar.markdown(
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
