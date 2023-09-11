@@ -16,6 +16,7 @@ def make_authenticated_request(url, token):
     headers = {'Authorization': f'Bearer {token}'}
     full_url = DOMINIO + url
     response = requests.get(full_url, headers=headers)
+    print(response)
     if response.status_code == 200:
         return response.json()
     return None

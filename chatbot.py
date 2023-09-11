@@ -102,8 +102,10 @@ def XatBot():
 
             api_response_url = ask_fine_tuned_ada(user_input)
             full_url = DOMINIO + api_response_url
+            print(full_url)
             headers = {'Authorization': f'Bearer {token}'}
             response = requests.get(full_url, headers=headers)
+            print(response)
 
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
