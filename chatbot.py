@@ -34,7 +34,7 @@ def XatBot():
 
         return sanitized_response
 
-    st.title('XatBot API NOSQL')
+    st.title('ChatBot API NOSQL')
 
     st.info(
         """

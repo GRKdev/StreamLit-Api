@@ -1,5 +1,6 @@
 import streamlit as st
 from chatbot import XatBot
+from chatbot_llama import XatBot_Llama
 from stats import show_stats_page
 
 st.set_page_config(
@@ -12,10 +13,11 @@ st.set_page_config(
     }
 )
 
-page = st.sidebar.radio("Menú", ["ChatBot", "Estadísticas"])
+page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama", "Estadísticas"])
 
 if page == "ChatBot":
     XatBot()
-# Página de estadísticas
 elif page == "Estadísticas":
     show_stats_page()
+elif page == "Chatbot Llama":
+    XatBot_Llama()
