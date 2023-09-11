@@ -5,7 +5,8 @@ from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family,render_grouped_bar_chart_fact,
     render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_monthly_revenue_client,
     render_bar_chart_monthly_revenue_client_ing, render_grouped_bar_chart_ing,
-    render_bar_chart_monthly_revenue_monthly_year_ing
+    render_bar_chart_monthly_revenue_monthly_year_ing, render_grouped_bar_chart_fact_cli_3_years,
+    render_grouped_bar_chart_ing_cli_3_years
     )
 
 last_assistant_response = None
@@ -72,6 +73,8 @@ def handle_chat_message(api_response_url, data, message_placeholder, user_input)
         "api/alb_stat?ing_sy=": render_bar_chart_monthly_revenue_monthly_year_ing,
         "api/art_stat?stat=stat_marca": render_pie_chart_marca,
         "api/art_stat?stat=stat_fam": render_pie_chart_family,
+        "api/alb_stat?cli_fact_3=": render_grouped_bar_chart_fact_cli_3_years,
+        "api/alb_stat?cli_ing_3=": render_grouped_bar_chart_ing_cli_3_years
     }
 
     handler = None

@@ -530,6 +530,73 @@ def render_grouped_bar_chart_fact(data, key=None):
 
     st_echarts(options=options, height="550px", key=key, theme="dark")
 
+def render_grouped_bar_chart_fact_cli_3_years(data, key=None):
+    years = [str(d['Año']) for d in data]
+    data_dict = data[0] if data else {}
+    meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
+    series_data = []
+    yearly_sums = {}
+
+    for year_data in data:
+        year = str(year_data['Año'])
+        monthly_data = year_data['IngresosMensuales']
+        
+        monthly_values = [float(monthly_data.get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+        yearly_sums[year] = round(sum(monthly_values), 2)
+
+    legend_names = [f"{year} ({yearly_sums[year]:.2f} €)" for year in years if year in yearly_sums]
+
+    for year in years:
+        if year in yearly_sums:
+            monthly_values = [float(next(y for y in data if str(y['Año']) == year)['IngresosMensuales'].get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+            series_data.append({
+                'name': f"{year} ({yearly_sums[year]:.2f} €)",
+                'type': 'bar',
+                'data': monthly_values,
+                'markPoint': {
+                    'symbol': 'pin',
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ]
+                },
+                'markLine': {
+                    'data': [{'type': 'average', 'name': 'Avg'}],
+                    'precision': 2,
+                }
+            })
+
+    options = {
+        "backgroundColor": "#0E1117",        
+        'title': {
+            'text': f'Fact. Anuales {nombre_cliente}',
+        },
+        'tooltip': {
+            'trigger': 'axis'
+        },
+        'legend': {
+            'data': legend_names
+        },
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
+        'xAxis': [{
+            'type': 'category',
+            'data': meses
+        }],
+        'yAxis': [{
+            'type': 'value'
+        }],
+        'series': series_data
+    }
+
+    st_echarts(options=options, height="550px", key=key, theme="dark")
+
 def render_grouped_bar_chart_ing(data, key=None):
     years = [str(d['Año']) for d in data]
     meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
@@ -576,6 +643,73 @@ def render_grouped_bar_chart_ing(data, key=None):
         },
         'legend': {
             'data': legend_names  
+        },
+        'toolbox': {
+            'show': True,
+            'feature': {
+                'dataView': {'show': True, 'readOnly': False},
+                'magicType': {'show': True, 'type': ['line', 'bar']},
+            }
+        },
+        'xAxis': [{
+            'type': 'category',
+            'data': meses
+        }],
+        'yAxis': [{
+            'type': 'value'
+        }],
+        'series': series_data
+    }
+
+    st_echarts(options=options, height="550px", key=key, theme="dark")
+
+def render_grouped_bar_chart_ing_cli_3_years(data, key=None):
+    years = [str(d['Año']) for d in data]
+    data_dict = data[0] if data else {}
+    meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    nombre_cliente = data_dict.get("NombreCliente", "Desconocido")
+    series_data = []
+    yearly_sums = {}
+
+    for year_data in data:
+        year = str(year_data['Año'])
+        monthly_data = year_data['IngresosMensuales']
+        
+        monthly_values = [float(monthly_data.get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+        yearly_sums[year] = round(sum(monthly_values), 2)
+
+    legend_names = [f"{year} ({yearly_sums[year]:.2f} €)" for year in years if year in yearly_sums]
+
+    for year in years:
+        if year in yearly_sums:
+            monthly_values = [float(next(y for y in data if str(y['Año']) == year)['IngresosMensuales'].get(mes, "0 €").split(" ")[0].replace(",", ".")) for mes in meses]
+            series_data.append({
+                'name': f"{year} ({yearly_sums[year]:.2f} €)",
+                'type': 'bar',
+                'data': monthly_values,
+                'markPoint': {
+                    'symbol': 'pin',
+                    'data': [
+                        {'type': 'max', 'name': 'Max'},
+                        {'type': 'min', 'name': 'Min'}
+                    ]
+                },
+                'markLine': {
+                    'data': [{'type': 'average', 'name': 'Avg'}],
+                    'precision': 2,
+                }
+            })
+
+    options = {
+        "backgroundColor": "#0E1117",        
+        'title': {
+            'text': f'Ganancias Anuales {nombre_cliente}',
+        },
+        'tooltip': {
+            'trigger': 'axis'
+        },
+        'legend': {
+            'data': legend_names
         },
         'toolbox': {
             'show': True,
