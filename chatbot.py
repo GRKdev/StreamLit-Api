@@ -82,7 +82,7 @@ def XatBot():
         """)
 
     def clear_chat_history():
-        st.session_state.chat_history = [{"role": "assistant", "content": "¡Hola! Comencemos a chatear."}]
+        st.session_state.chat_history = []
     st.sidebar.button('Borrar Historial', on_click=clear_chat_history)
 
     st.sidebar.divider()  
