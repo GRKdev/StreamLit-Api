@@ -15,10 +15,13 @@ token = create_jwt()
 def make_authenticated_request(url, token):
     headers = {'Authorization': f'Bearer {token}'}
     full_url = DOMINIO + url
-    response = requests.get(full_url, headers=headers)
-    print(response)
-    if response.status_code == 200:
-        return response.json()
+    try:
+        response = requests.get(full_url, headers=headers)
+        print(f"Respuesta Completa: {response.json()}")
+        if response.status_code == 200:
+            return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error en la petición: {e}")
     return None
 
 def show_stats_page():
