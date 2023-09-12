@@ -10,14 +10,14 @@ from utils.chart_utils import (
 )
 
 DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-token = create_jwt()
 
-def make_authenticated_request(url, token):
+
+def make_authenticated_request(url):
+    token = create_jwt()  # Genera un nuevo token aquí
     headers = {'Authorization': f'Bearer {token}'}
     full_url = DOMINIO + url
     try:
         response = requests.get(full_url, headers=headers)
-        print(f"Respuesta Completa: {response.json()}")
         if response.status_code == 200:
             return response.json()
     except requests.exceptions.RequestException as e:
@@ -33,65 +33,65 @@ def show_stats_page():
 
     with st.sidebar.expander("🔍 Artículos"):
         if st.button("Marca Producto", key='button_marca_producto'):
-            data = make_authenticated_request("/api/art_stat?stat=stat_marca", token)
+            data = make_authenticated_request("/api/art_stat?stat=stat_marca")
             if data:
                 st.session_state.show_chart.insert(0, ("marca", data))
         
         if st.button("Familia Producto", key='button_familia_producto'):
-            data = make_authenticated_request("/api/art_stat?stat=stat_fam", token)
+            data = make_authenticated_request("/api/art_stat?stat=stat_fam")
             if data:
                 st.session_state.show_chart.insert(0, ("fam", data))
 
     with st.sidebar.expander("👥 Clientes"):
         if st.button("Domicili Client", key='button_domicili_client'):
-            data = make_authenticated_request("/api/cli_stat?stat=comu", token)
+            data = make_authenticated_request("/api/cli_stat?stat=comu")
             if data:
                 st.session_state.show_chart.insert(0, ("cli", data))
                 
         if st.button("Client barres", key='button_client_barres'):
-            data = make_authenticated_request("/api/cli_stat?stat=comu", token)
+            data = make_authenticated_request("/api/cli_stat?stat=comu")
             if data:
                 st.session_state.show_chart.insert(0, ("cli_barras", data))
 
     with st.sidebar.expander("💶 Facturación"):
         if st.button("Anuales agrupadas", key='button_ingresos_anuales_group'):
-            data = make_authenticated_request("/api/alb_stat?fact_total=true", token)
+            data = make_authenticated_request("/api/alb_stat?fact_total=true")
             if data:
                 st.session_state.show_chart.insert(0, ("total_group_fact", data))
 
         if st.button("2023", key='button_ingresos_current_year'):
-            data = make_authenticated_request("/api/alb_stat?fact_cy=true", token)
+            data = make_authenticated_request("/api/alb_stat?fact_cy=true")
             if data:
                 st.session_state.show_chart.insert(0, ("cy", data))
                 
         if st.button("2022", key='button_ingresos_selected_year'):
-            data = make_authenticated_request("/api/alb_stat?fact_sy=2022", token)
+            data = make_authenticated_request("/api/alb_stat?fact_sy=2022")
             if data:
                 st.session_state.show_chart.insert(0, ("selectedyear", data))
                 
         if st.button("Cliente GRK", key='button_key'):
-            data = make_authenticated_request("/api/alb_stat?cli_fact_cy=grk", token)
+            data = make_authenticated_request("/api/alb_stat?cli_fact_cy=grk")
             if data:
                 st.session_state.show_chart.insert(0, ("facturacio_client", data))
 
     with st.sidebar.expander("💰 Ingresos"):
         if st.button("Anuales agrupadas", key='button_ganancias_anuales_group'):
-            data = make_authenticated_request("/api/alb_stat?ing_total=true", token)
+            data = make_authenticated_request("/api/alb_stat?ing_total=true")
             if data:
                 st.session_state.show_chart.insert(0, ("total_group_ing", data))
 
         if st.button("2023", key='button_ganacias_current_year'):
-            data = make_authenticated_request("/api/alb_stat?ing_cy=true", token)
+            data = make_authenticated_request("/api/alb_stat?ing_cy=true")
             if data:
                 st.session_state.show_chart.insert(0, ("ing_cy", data))
 
         if st.button("2022", key='button_ganacias_selected_year'):
-            data = make_authenticated_request("/api/alb_stat?ing_sy=2022", token)
+            data = make_authenticated_request("/api/alb_stat?ing_sy=2022")
             if data:
                 st.session_state.show_chart.insert(0, ("selectedyear_ing", data))
 
         if st.button("Cliente GRK", key='button_ing_key'):
-            data = make_authenticated_request("/api/alb_stat?cli_ing_cy=grk", token)
+            data = make_authenticated_request("/api/alb_stat?cli_ing_cy=grk")
             if data:
                 st.session_state.show_chart.insert(0, ("ganancia_client", data))
 

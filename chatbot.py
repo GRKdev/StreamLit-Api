@@ -11,7 +11,8 @@ def XatBot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
     openai.api_key = st.secrets.get("OPENAI_API_KEY")
-
+    token = create_jwt()
+    
     def ask_fine_tuned_ada(prompt):
         response = openai.Completion.create(
             engine=OPEN_AI_MODEL,
@@ -90,7 +91,7 @@ def XatBot():
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
     unsafe_allow_html=True,
 )
-    token = create_jwt()
+
     if run_key_check_loop():
         st.session_state.chat_history = st.session_state.get('chat_history', [])
         for message in st.session_state.chat_history:
