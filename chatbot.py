@@ -81,6 +81,10 @@ def XatBot():
         *Facturación cliente GRK Tech*                                 
         """)
 
+    def clear_chat_history():
+        st.session_state.chat_history = [{"role": "assistant", "content": "¡Hola! Comencemos a chatear."}]
+    st.sidebar.button('Borrar Historial', on_click=clear_chat_history)
+
     st.sidebar.divider()  
     st.sidebar.markdown(
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">GRKdev</a></h6>',
