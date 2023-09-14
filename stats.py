@@ -13,7 +13,7 @@ DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
 
 def make_authenticated_request(url):
-    token = create_jwt()  # Genera un nuevo token aquí
+    token = create_jwt()
     headers = {'Authorization': f'Bearer {token}'}
     full_url = DOMINIO + url
     try:
@@ -95,7 +95,7 @@ def show_stats_page():
             if data:
                 st.session_state.show_chart.insert(0, ("ganancia_client", data))
 
-    st.sidebar.markdown("---")  
+    st.sidebar.divider()  
     st.sidebar.markdown(
     '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev">@GRKdev</a></h6>',
     unsafe_allow_html=True,
