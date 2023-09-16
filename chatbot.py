@@ -3,6 +3,7 @@ import os
 import streamlit as st
 import requests
 import re
+import json
 from utils.generate_token import create_jwt
 from utils.key_check import run_key_check_loop
 from utils.chatbot_utils import handle_chat_message, ask_gpt
@@ -106,23 +107,34 @@ def XatBot():
                 st.markdown(user_input)
 
             api_response_url = ask_fine_tuned_ada(user_input)
-            full_url = DOMINIO + api_response_url
-            print(full_url)
-            headers = {'Authorization': f'Bearer {token}'}
-            response = requests.get(full_url, headers=headers)
-            print(response)
+
+
+            if 'api/' in api_response_url:
+                full_url = DOMINIO + api_response_url
+                print(full_url)
+                headers = {'Authorization': f'Bearer {token}'}
+                response = requests.get(full_url, headers=headers)
+                print(response)
+            else:
+                response = None
+
 
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
 
-            if response.status_code == 200:
-                data = response.json()
-                handle_chat_message(api_response_url, data, message_placeholder, user_input)
-            else:
-                st.markdown("```⚠ chatbot general```")
-                additional_context = {
-                    "previous_response": user_input,
-                    "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None
-                }
-                gpt_response = ask_gpt(user_input, message_placeholder, additional_context=additional_context)
-                st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+                if response and response.status_code == 200:
+                    data = response.json()
+                    handle_chat_message(api_response_url, data, message_placeholder, user_input)
+                else:
+                    st.markdown("```⚠ chatbot general```")
+
+                    additional_context = {
+                        "previous_response": user_input,
+                        "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None,
+                        "api_error": response.json() if 'api/' in api_response_url else None,
+                    }
+
+                    print(additional_context)
+                    gpt_response = ask_gpt(user_input, message_placeholder, additional_context=additional_context)
+                    st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+

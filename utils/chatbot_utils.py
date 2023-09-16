@@ -14,7 +14,10 @@ last_assistant_response = None
 def ask_gpt(prompt, placeholder, additional_context=None):
     global last_assistant_response
     messages_list = [
-        {"role": "system", "content": "Ets un assistent de la empresa GRK que respon sempre en estil MarkDown, mostra les dades relevants en Negrita. No expliquis com realitzar calculs, dona la resposta directament. Rebràs pregunta de l'usuari juntament amb dades obtingudes d'una base de dades. Has d'utilitzar ambdós per proporcionar una resposta coherent, clara i útil. Assegura't d'estructurar la informació de manera amigable i fàcil de comprendre per a l'usuari, el nom de client, article o albarà al principi. Si el json conté múltiples elements, sintetitza la informació de manera concisa. Quan tractis amb números monetaris, afegeix el simbol €"},
+            {
+            "role": "system",
+            "content": "Eres un asistente de la empresa GRK. ¡NO INVENTES INFORMACIÓN QUE DESCONOCES! Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta clara, coherente y útil en formato lista. Si no conoces la respuesta, indícalo. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Si el JSON contiene múltiples elementos, resume la información de forma concisa. Cuando manejes cifras monetarias, añade el símbolo €."
+            }
     ]
     if last_assistant_response:
         messages_list.append({"role": "assistant", "content": last_assistant_response})
@@ -22,11 +25,15 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     if additional_context:
         fine_tuned_result = additional_context.get("fine_tuned_result")
         if fine_tuned_result:
-            messages_list.append({"role": "assistant", "content": f"Resultado de fine_tuned: {fine_tuned_result}"})
+            messages_list.append({"role": "assistant", "content": f"Result fine_tuned: {fine_tuned_result}"})
             
         previous_response = additional_context.get("previous_response")
         if previous_response:
             messages_list.append({"role": "user", "content": previous_response})
+
+        api_error = additional_context.get("api_error")
+        if api_error:
+            messages_list.append({"role": "system", "content": f"Error: {api_error}"})
 
     messages_list.append({"role": "user", "content": prompt})
     messages_list.append({"role": "user", "content": prompt})
