@@ -118,7 +118,6 @@ def XatBot():
             else:
                 response = None
 
-
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
 

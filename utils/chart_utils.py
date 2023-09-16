@@ -570,7 +570,7 @@ def render_grouped_bar_chart_fact_cli_3_years(data, key=None):
     options = {
         "backgroundColor": "#0E1117",        
         'title': {
-            'text': f'Fact. Anuales {nombre_cliente}',
+            'text': f'Facturación Cliente: {nombre_cliente}',
         },
         'tooltip': {
             'trigger': 'axis'
@@ -703,7 +703,7 @@ def render_grouped_bar_chart_ing_cli_3_years(data, key=None):
     options = {
         "backgroundColor": "#0E1117",        
         'title': {
-            'text': f'Ganancias Anuales {nombre_cliente}',
+            'text': f'Ganancias Cliente: {nombre_cliente}',
         },
         'tooltip': {
             'trigger': 'axis'
