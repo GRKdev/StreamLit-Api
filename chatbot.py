@@ -3,10 +3,9 @@ import os
 import streamlit as st
 import requests
 import re
-import json
 from utils.generate_token import create_jwt
 from utils.key_check import run_key_check_loop
-from utils.chatbot_utils import handle_chat_message, ask_gpt
+from utils.chatbot_utils import handle_chat_message, ask_gpt, ask_gpt_ft
 
 def XatBot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
@@ -44,6 +43,7 @@ def XatBot():
         Este chatbot inteligente te permite hacer consultas directas con lenguaje natural a nuestra base de datos de MongoDB.
 
         Utiliza un modelo de lenguaje Fine-Tuned (Entrenado con ADA) para enviar peticiones url a nuestra API y las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI a partir de los resultados obtenidos.
+        Si no hay resultados o tenemos un error, el modelo GPT-3.5 FineTuned dará la respuesta.
 
         ##### ¿Qué puedes hacer?
         - 👤 **Clientes**: Buscar información detallada de clientes, como contacto y facturación.
@@ -88,7 +88,7 @@ def XatBot():
             <li>Facturacion año 2021</li>
             <li>Ganancias totales</li>
             <li>Facturación cliente Pepito grillo</li>
-            <li>ingresos totales cliente GRK Tech</li>
+            <li>ingresos totales cliente Ultra Tech</li>
         </ul>
         
         <h4 style='font-size: smaller;'>Otros</h4>
@@ -153,6 +153,6 @@ def XatBot():
                     }
 
                     print(additional_context)
-                    gpt_response = ask_gpt(user_input, message_placeholder, additional_context=additional_context)
+                    gpt_response = ask_gpt_ft(user_input, message_placeholder, additional_context=additional_context)
                     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
 

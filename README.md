@@ -17,7 +17,7 @@ Entrenamiento del modelo de fine-tuning con OpenAI.
 Desarrollo de una API utilizando Flask. Configuraciones de las rutas y funciones de cada ruta personalizada. Se implementa una conexión a una base de datos NoSQL de MongoDB. [URL API](https://github.com/GRKdev/API).
 
 ## **Fase 4: Implementación con Streamlit**
-Creación del chatbot utilizando Streamlit. El chatbot hace preguntas, y el modelo de fine-tuning devuelve una respuesta mediante una petición a la URL API. Además, el chatbot tiene accesos rápidos para ver estadísticas directamente conectadas a la base de datos a través de la API.
+Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chatbot con el modelo de fine-tuning devuelve una respuesta mediante una petición a la URL API. Además, el chatbot tiene accesos rápidos para ver estadísticas directamente conectadas a la base de datos a través de la API. Los resultados exitosos serán devueltos a GPT-3.5 Turbo para generar una respuesta. Si no hay resultados exitoso, o es una pregunta general, se utilizará un modelo GPT-3.5 Finetuneado para generar la respuesta.
 
 ## Roadmap
 
@@ -25,7 +25,8 @@ Creación del chatbot utilizando Streamlit. El chatbot hace preguntas, y el mode
 - [ ] [Script para la conexión y fine-tuning automático (nuevo API de OpenAI)](https://github.com/GRKdev/Script-SQL-API)
 - [x] [Flask API](https://github.com/GRKdev/API)
 - [x] [Chatbot StreamLit](https://github.com/GRKdev/StreamLit-Api)
-- [x] Añadido respuestas con gràficas.
-- [x] Añadir contexto última pregunta/respuesta
+- [x] Añadido respuestas con gràficas
+- [x] Añadido contexto última pregunta/respuesta, y errores de api
+- [x] Añadadido Respuesta de GPT-3.5 Turbo Finetuned para respuestas sin resultados de la base de datos
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
-- [ ] Creación de Agents y Functions personalizados
+- [ ] Creación de Agentes y Functions personalizadas

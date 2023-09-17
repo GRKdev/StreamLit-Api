@@ -1,5 +1,7 @@
 import streamlit as st
 import openai
+import os
+
 
 from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family,render_grouped_bar_chart_fact,
@@ -16,7 +18,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     messages_list = [
             {
             "role": "system",
-            "content": "Eres un asistente de la empresa GRK Tech. ¡NO INVENTES INFORMACIÓN QUE DESCONOCES! Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta clara, coherente y útil en formato lista. Si no conoces la respuesta, indícalo. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Si el JSON contiene múltiples elementos, resume la información de forma concisa. Cuando manejes cifras monetarias, añade el símbolo €."
+            "content": "Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta clara, coherente y útil en formato lista. Si no conoces la respuesta, indícalo. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Si el JSON contiene múltiples elementos, resume la información de forma concisa. Cuando manejes cifras monetarias, añade el símbolo €."
             }
     ]
     if last_assistant_response:
@@ -55,6 +57,52 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     last_assistant_response = full_response.strip()
 
     return last_assistant_response
+
+
+def ask_gpt_ft(prompt, placeholder, additional_context=None):
+    OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
+    global last_assistant_response
+    messages_list = [
+            {
+            "role": "system",
+            "content": "Eres un asistente de la empresa GRK Tech. ¡NO INVENTES INFORMACIÓN QUE DESCONOCES! Recibirás preguntas del usuario junto con datos obtenidos de una base de datos, o del contexto. Si no sabes los resultados, dirás que no tienes información"
+            }
+    ]
+    if last_assistant_response:
+        messages_list.append({"role": "assistant", "content": f"Assistant last response: {last_assistant_response}"})
+
+    if additional_context:          
+        previous_response = additional_context.get("previous_response")
+        if previous_response:
+            messages_list.append({"role": "user", "content": f"User previous response: {previous_response}"})
+
+        api_error = additional_context.get("api_error")
+        if api_error:
+            messages_list.append({"role": "system", "content": f"Error: {api_error}"})
+
+    messages_list.append({"role": "user", "content": prompt})
+
+    full_response = ""
+    
+    for response in openai.ChatCompletion.create(
+        model=OPENAI_MODEL_35,
+        messages=messages_list,
+        max_tokens=1000,
+        n=1,
+        stop=None,
+        temperature=0.5,
+        stream=True,
+    ):
+        full_response += response.choices[0].delta.get("content", "")
+        placeholder.markdown(full_response + "▌")
+    placeholder.markdown(full_response)
+    
+    last_assistant_response = full_response.strip()
+
+    return last_assistant_response
+
+
+
 
 def default_handler(data, message_placeholder, user_input):
     st.markdown("<span style='color:green; font-style:italic; font-size:small;'>⚠ chatbot Fine-Tuned</span>", unsafe_allow_html=True)
