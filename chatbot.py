@@ -41,13 +41,15 @@ def XatBot():
         """
         #### **Bienvenido al chatbot de GRK Tech**
 
-        Este chatbot inteligente te permite hacer consultas directas a nuestra base de datos de MongoDB. Utiliza un modelo de lenguaje Fine-Tuned para enviar peticiones API y las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI.
+        Este chatbot inteligente te permite hacer consultas directas con lenguaje natural a nuestra base de datos de MongoDB.
+
+        Utiliza un modelo de lenguaje Fine-Tuned (Entrenado con ADA) para enviar peticiones url a nuestra API y las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI a partir de los resultados obtenidos.
 
         ##### ¿Qué puedes hacer?
         - 👤 **Clientes**: Buscar información detallada de clientes, como contacto y facturación.
         - 🛒 **Artículos**: Consultar detalles de artículos, incluyendo precios y stock.
         - 🧾 **Albaranes**: Obtener información sobre albaranes específicos.
-        - 📊 **Finanzas**: Para consultas financieras, el sistema envía la petición directamente al servidor y muestra los datos en forma de gráfico, sin pasar por OpenAI.
+        - 📊 **Finanzas**: Para consultas financieras, el sistema envía la petición directamente al servidor y muestra los datos en forma de gráfico, sin pasar por GPT 3.5.
 
         ⬅️ **Ejemplos de preguntas** que puedes hacer se encuentran en el menú de la izquierda.
 
