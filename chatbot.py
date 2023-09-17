@@ -24,6 +24,7 @@ def XatBot():
             temperature=0,
         )
         api_response = response.choices[0].text.strip()
+        api_response = api_response.strip()
 
         match = re.search(r'(api/[^ ?]+)(\?.*)?', api_response)
 
@@ -36,52 +37,66 @@ def XatBot():
 
         return sanitized_response
 
-    st.title('ChatBot API NOSQL')
-
     st.info(
         """
-        **Bienvenido al chatbot de GRK**
+        #### **Bienvenido al chatbot de GRK Tech**
 
-        Puedes hacer preguntas del estilo:
-        - ¿Cómo funciona el chat?
-        - ¿Quién es el cliente GRK?
-        - Dame el teléfono de John Doe
-        - Dame toda la info del cliente Pepito Grillo
-        - Info del artículo 1009
-        - Cual es el albarán 1014
-        - ¿Cuánto son los ingresos del cliente GRK?
-        - Dame los telefonos de los clientes GRK y Global Data
-        - Info Articles MacBook Air i Razer Black
-        - 193134010546 (poner un código de barras)
-        """, icon="👋" 
-        )
-            
-    with st.sidebar.expander("🧩 Ejemplos", False):
+        Este chatbot inteligente te permite hacer consultas directas a nuestra base de datos de MongoDB. Utiliza un modelo de lenguaje Fine-Tuned para enviar peticiones API y las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI.
+
+        ##### ¿Qué puedes hacer?
+        - 👤 **Clientes**: Buscar información detallada de clientes, como contacto y facturación.
+        - 🛒 **Artículos**: Consultar detalles de artículos, incluyendo precios y stock.
+        - 🧾 **Albaranes**: Obtener información sobre albaranes específicos.
+        - 📊 **Finanzas**: Para consultas financieras, el sistema envía la petición directamente al servidor y muestra los datos en forma de gráfico, sin pasar por OpenAI.
+
+        ⬅️ **Ejemplos de preguntas** que puedes hacer se encuentran en el menú de la izquierda.
+
+        """
+    )
+                
+    with st.sidebar.expander("🎯 Ejemplos", False):
         st.markdown("""
-        *Dona'm info del client GRK*
-                    
-        *info article Apple*
-                    
-        *telefono de Maria Lopez*
-                    
-        *¿Cual es el albaran 1012?*
+        <h4 style='font-size: smaller;'>Clientes</h4>
+        <ul style='font-size: smaller;'>
+            <li>Dona'm info del client GRK</li>
+            <li>telefono de Maria Lopez</li>
+            <li>tlf de clientes GRK y Pepito</li>
+            <li>Toda info cliente John Doe</li>   
+            <li> ¿De quién es el tlf 955555555?</li>
+            <li> Email de Global Data</li>                 
+        </ul>
         
-        *Cual es el albarán 1014*
-                    
-        *tlf de clientes GRK y Pepito*
+        <h4 style='font-size: smaller;'>Artículos</h4>
+        <ul style='font-size: smaller;'>
+            <li>info article Apple</li>
+            <li>toda info articulo Razer Blackwidow</li>
+            <li>Precio Venta articulo MacBook Air</li>
+            <li>Info del artículo 1014</li>
+        </ul>
         
-        *toda info articulo Razer Blackwidow*
-
-        *Precio Venta articulo MacBook Air*
+        <h4 style='font-size: smaller;'>Albaranes</h4>
+        <ul style='font-size: smaller;'>
+            <li>¿Cual es el albaran 1012?</li>
+            <li>Albarán 1014</li>
+        </ul>
         
-        *Facturacion total*
+        <h4 style='font-size: smaller;'>Finanzas</h4>
+        <ul style='font-size: smaller;'>
+            <li>Facturacion total</li>
+            <li>Facturacion año 2021</li>
+            <li>Ganancias totales</li>
+            <li>Facturación cliente Pepito grillo</li>
+            <li>ingresos totales cliente GRK Tech</li>
+        </ul>
+        
+        <h4 style='font-size: smaller;'>Otros</h4>
+        <ul style='font-size: smaller;'>
+            <li>Quien ha creado el chatbot?</li>
+            <li>¿Cómo funciona este chat?</li>
+            <li>Los datos son inventados?</li>
+        </ul>
+        """, unsafe_allow_html=True)
 
-        *Ganancias totales*
-
-        *Quien ha creado el chatbot?*
-
-        *Facturación cliente GRK Tech*                                 
-        """)
 
     def clear_chat_history():
         st.session_state.chat_history = []
@@ -100,6 +115,8 @@ def XatBot():
                 st.markdown(message["content"])
 
         user_input = st.chat_input('Ingresa tu pregunta:')
+        if user_input:
+            user_input = user_input.strip()
 
         if user_input:
             st.session_state.chat_history.append({"role": "user", "content": user_input})
@@ -125,7 +142,9 @@ def XatBot():
                     data = response.json()
                     handle_chat_message(api_response_url, data, message_placeholder, user_input)
                 else:
-                    st.markdown("```⚠ chatbot general```")
+                    st.markdown("<span style='color:red; font-style:italic; font-size:small;'>⚠ chatbot general</span>", unsafe_allow_html=True)
+
+
 
                     additional_context = {
                         "previous_response": user_input,
