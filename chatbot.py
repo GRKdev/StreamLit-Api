@@ -145,9 +145,7 @@ def XatBot():
                     handle_chat_message(api_response_url, data, message_placeholder, user_input)
                 else:
                     st.markdown("<span style='color:red; font-style:italic; font-size:small;'>⚠ chatbot general</span>", unsafe_allow_html=True)
-
-
-
+                    
                     additional_context = {
                         "previous_response": user_input,
                         "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None,

@@ -36,7 +36,6 @@ def ask_gpt(prompt, placeholder, additional_context=None):
             messages_list.append({"role": "system", "content": f"Error: {api_error}"})
 
     messages_list.append({"role": "user", "content": prompt})
-    messages_list.append({"role": "user", "content": prompt})
 
     full_response = ""
     
