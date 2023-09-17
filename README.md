@@ -26,6 +26,6 @@ Creación del chatbot utilizando Streamlit. El chatbot hace preguntas, y el mode
 - [x] [Flask API](https://github.com/GRKdev/API)
 - [x] [Chatbot StreamLit](https://github.com/GRKdev/StreamLit-Api)
 - [x] Añadido respuestas con gràficas.
-- [ ] Añadir contexto última pregunta/respuesta (Langchain/Llama-Index)
+- [x] Añadir contexto última pregunta/respuesta
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
 - [ ] Creación de Agents y Functions personalizados
