@@ -29,4 +29,4 @@ Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chat
 - [x] Añadido contexto última pregunta/respuesta, y errores de api
 - [x] Añadadido Respuesta de GPT-3.5 Turbo Finetuned para respuestas sin resultados de la base de datos
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
-- [ ] Creación de Agentes y Functions personalizadas
+- [ ] Creación de Agentes y Functiones personalizadas
