@@ -18,7 +18,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     messages_list = [
             {
             "role": "system",
-            "content": "Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta clara, coherente y útil en formato lista. Si no conoces la respuesta, indícalo. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Si el JSON contiene múltiples elementos, resume la información de forma concisa. Cuando manejes cifras monetarias, añade el símbolo €."
+            "content": "Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista. Proporciona una respuesta clara, coherente y útil. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Cuando manejes cifras monetarias, hazlo así 40 €."
             }
     ]
     if last_assistant_response:
@@ -65,7 +65,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     messages_list = [
             {
             "role": "system",
-            "content": "Eres un asistente de la empresa GRK Tech. ¡NO INVENTES INFORMACIÓN QUE DESCONOCES! Recibirás preguntas del usuario junto con datos obtenidos de una base de datos, o del contexto. Si no sabes los resultados, dirás que no tienes información"
+            "content": "Eres un asistente de la empresa GRK Tech. ¡NO INVENTES INFORMACIÓN QUE DESCONOCES! Recibirás preguntas del usuario junto con datos obtenidos de una base de datos y del contexto. Si no sabes los resultados, dirás que no tienes información"
             }
     ]
     if last_assistant_response:
@@ -90,7 +90,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         max_tokens=1000,
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.1,
         stream=True,
     ):
         full_response += response.choices[0].delta.get("content", "")
@@ -100,9 +100,6 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     last_assistant_response = full_response.strip()
 
     return last_assistant_response
-
-
-
 
 def default_handler(data, message_placeholder, user_input):
     st.markdown("<span style='color:green; font-style:italic; font-size:small;'>⚠ chatbot Fine-Tuned</span>", unsafe_allow_html=True)
