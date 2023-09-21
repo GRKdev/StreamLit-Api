@@ -35,6 +35,7 @@ def check_for_openai_key(iteration):
         sl.write(
             """Hola, es fantástico que quieras chatear conmigo. Sin embargo, necesito tu clave API de OpenAI para funcionar.
             Si no tienes una clave, puedes registrarte y crear una aquí https://platform.openai.com/account/api-keys.
+            No te preocupes, tu clave no se almacenará de ninguna forma, excepto durante tu sesión actual.
             """
         )
         openai_api_key = sl.text_input('🔑 OpenAI API Key', type='password', key=key)
