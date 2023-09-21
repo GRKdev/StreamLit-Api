@@ -7,7 +7,7 @@ Este proyecto es un ChatBot implementado en varias fases con el objetivo de crea
 ## Fases del Proyecto
 
 ### Fase 1: Preparación de Datos
-Creación de un script para crear dos archivos JSNL (train y valid) con el objetivo de entrenar un modelo de fine-tuning con OpenAI que devuelva respuestas mediante una URL API.
+Creación de un script para crear dos archivos JSONL (train y valid) con el objetivo de entrenar un modelo de fine-tuning con OpenAI que devuelva respuestas mediante una URL API.
 El proyecto para esta fase se encuentra en [este repositorio de GitHub](https://github.com/GRKdev/Script-SQL-API).
 
 ### Fase 2: Entrenamiento del Modelo
@@ -30,3 +30,36 @@ Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chat
 - [x] Añadadido Respuesta de GPT-3.5 Turbo Finetuned para respuestas sin resultados de la base de datos
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
 - [ ] Creación de Agentes y Functiones personalizadas
+
+# ChatBot Streamlit API NOSQL
+
+## General Description
+
+This project is a ChatBot implemented in various phases with the aim of creating an efficient and functional conversational system. It uses OpenAI's GPT-3.5 Turbo model to generate responses and is built on a NOSQL API architecture.
+
+## Project Phases
+
+### Phase 1: Data Preparation
+Creation of a script to create two JSONL files (train and valid) with the aim of training a fine-tuning model with OpenAI that returns responses via a URL API.
+The project for this phase can be found in [this GitHub repository](https://github.com/GRKdev/Script-SQL-API).
+
+### Phase 2: Model Training
+Training of the fine-tuning model with OpenAI.
+
+### Phase 3: API Creation with Flask
+Development of an API using Flask. Configuration of routes and functions for each custom route. A connection to a MongoDB NoSQL database is implemented. [API URL](https://github.com/GRKdev/API).
+
+## **Phase 4: Implementation with Streamlit**
+Creation of the chatbot using Streamlit. The user asks questions, and the chatbot with the fine-tuning model returns a response via a request to the API URL. Additionally, the chatbot has quick access to view statistics directly connected to the database through the API. Successful results will be returned to GPT-3.5 Turbo to generate a response. If there are no successful results, or it is a general question, a GPT-3.5 Finetuned model will be used to generate the response.
+
+## Roadmap
+
+- [x] [Script for data preparation](https://github.com/GRKdev/Script-SQL-API)
+- [ ] [Script for automatic connection and fine-tuning (new OpenAI API)](https://github.com/GRKdev/Script-SQL-API)
+- [x] [Flask API](https://github.com/GRKdev/API)
+- [x] [StreamLit Chatbot](https://github.com/GRKdev/StreamLit-Api)
+- [x] Added responses with graphs
+- [x] Added last question/answer context, and API errors
+- [x] Added GPT-3.5 Turbo Finetuned response for answers without database results
+- [ ] Data with embeddings (Langchain/Llama-Index) for chatting with documents
+- [ ] Creation of Agents and Custom Functions
