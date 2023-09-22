@@ -2,7 +2,6 @@ import streamlit as st
 import openai
 import os
 
-
 from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family,render_grouped_bar_chart_fact,
     render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_monthly_revenue_client,
@@ -12,6 +11,9 @@ from utils.chart_utils import (
     )
 
 last_assistant_response = None
+
+secret_key_ft = st.secrets["OPENAI_MODEL"]
+model_name_ft = ":".join(secret_key_ft.split(":")[1:4])
 
 def ask_gpt(prompt, placeholder, additional_context=None):
     global last_assistant_response
@@ -102,7 +104,6 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     return last_assistant_response
 
 def default_handler(data, message_placeholder, user_input):
-    st.markdown("<span style='color:green; font-style:italic; font-size:small;'>⚠ chatbot Fine-Tuned</span>", unsafe_allow_html=True)
     json_response = generate_response_from_mongo_results(data)
     additional_context = {
         "previous_response": user_input,
@@ -110,6 +111,8 @@ def default_handler(data, message_placeholder, user_input):
     }
     gpt_response = ask_gpt(json_response, message_placeholder, additional_context=additional_context)
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+    st.markdown(f"<div style='color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa los datos.</div>", unsafe_allow_html=True)
+
 
 
 def handle_chat_message(api_response_url, data, message_placeholder, user_input):
@@ -138,7 +141,20 @@ def handle_chat_message(api_response_url, data, message_placeholder, user_input)
         handler(data)
     else:
         default_handler(data, message_placeholder, user_input)
-        
+
+
+def handle_gpt_ft_message(user_input, message_placeholder, api_response_url, model_name, response=None):
+    additional_context = {
+        "previous_response": user_input,
+        "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None,
+        "api_error": response.json() if 'api/' in api_response_url else None,
+    }
+
+    print(additional_context)
+    gpt_response = ask_gpt_ft(user_input, message_placeholder, additional_context=additional_context)
+    st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
+    st.markdown(f"<div style='color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name}. Los datos pueden ser erróneos. ⚠</div>", unsafe_allow_html=True)
+
 def generate_response_from_mongo_results(data):
     print(f"data: {data}") 
     if not data:
