@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 import os
-
+import re
 from utils.chart_utils import (
     render_pie_chart_marca, render_pie_chart_family,render_grouped_bar_chart_fact,
     render_bar_chart_monthly_revenue_monthly_year, render_bar_chart_monthly_revenue_client,
@@ -10,10 +10,37 @@ from utils.chart_utils import (
     render_grouped_bar_chart_ing_cli_3_years
     )
 
-last_assistant_response = None
-
 secret_key_ft = st.secrets["OPENAI_MODEL"]
 model_name_ft = ":".join(secret_key_ft.split(":")[1:4])
+secret_key = st.secrets["OPENAI_MODEL_35"]
+model_name = ":".join(secret_key.split(":")[1:4])
+OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
+OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
+
+last_assistant_response = None
+
+def ask_fine_tuned_ada(prompt):
+    response = openai.Completion.create(
+        engine=OPEN_AI_MODEL,
+        prompt=prompt,
+        max_tokens=50,
+        n=1,
+        stop="&&",
+        temperature=0,
+    )
+    api_response = response.choices[0].text.strip()
+    api_response = api_response.strip()
+
+    match = re.search(r'(api/[^ ?]+)(\?.*)?', api_response)
+
+    if match:
+        sanitized_response = match.group(0)
+    else:
+        sanitized_response = api_response
+
+    print(f"Sanitized Response: {sanitized_response}")
+
+    return sanitized_response
 
 def ask_gpt(prompt, placeholder, additional_context=None):
     global last_assistant_response
@@ -62,7 +89,6 @@ def ask_gpt(prompt, placeholder, additional_context=None):
 
 
 def ask_gpt_ft(prompt, placeholder, additional_context=None):
-    OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
     global last_assistant_response
     messages_list = [
             {
@@ -103,6 +129,14 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
 
     return last_assistant_response
 
+
+def generate_response_from_mongo_results(data):
+    print(f"data: {data}") 
+    if not data:
+        return "No se encontraron resultados."
+    else:
+        return str(data)
+    
 def default_handler(data, message_placeholder, user_input):
     json_response = generate_response_from_mongo_results(data)
     additional_context = {
@@ -111,9 +145,7 @@ def default_handler(data, message_placeholder, user_input):
     }
     gpt_response = ask_gpt(json_response, message_placeholder, additional_context=additional_context)
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-    st.markdown(f"<div style='color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa los datos.</div>", unsafe_allow_html=True)
-
-
+    st.markdown(f"<div style='text-align:right; color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa el resultado. ⚠</div>", unsafe_allow_html=True)
 
 def handle_chat_message(api_response_url, data, message_placeholder, user_input):
     api_to_function_map = {
@@ -143,7 +175,7 @@ def handle_chat_message(api_response_url, data, message_placeholder, user_input)
         default_handler(data, message_placeholder, user_input)
 
 
-def handle_gpt_ft_message(user_input, message_placeholder, api_response_url, model_name, response=None):
+def handle_gpt_ft_message(user_input, message_placeholder, api_response_url, response=None):
     additional_context = {
         "previous_response": user_input,
         "fine_tuned_result": api_response_url if 'api/' not in api_response_url else None,
@@ -153,11 +185,4 @@ def handle_gpt_ft_message(user_input, message_placeholder, api_response_url, mod
     print(additional_context)
     gpt_response = ask_gpt_ft(user_input, message_placeholder, additional_context=additional_context)
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
-    st.markdown(f"<div style='color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name}. Los datos pueden ser erróneos. ⚠</div>", unsafe_allow_html=True)
-
-def generate_response_from_mongo_results(data):
-    print(f"data: {data}") 
-    if not data:
-        return "No se encontraron resultados."
-    else:
-        return str(data)
+    st.markdown(f"<div style='text-align:right; color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name}. Los datos pueden ser erróneos. ⚠</div>", unsafe_allow_html=True)

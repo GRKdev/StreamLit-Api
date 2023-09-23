@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_echarts import st_echarts
-import os
-import requests
+
 
 if 'saved_charts' not in st.session_state:
         st.session_state.saved_charts = []  
@@ -10,6 +9,12 @@ MONTHS = [
     'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
     'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
 ]
+
+def display_chart_and_warning(options, key=None, height="500px", theme="dark", write_s=False):
+    s = st_echarts(options=options, height=height, key=key, theme=theme) if key else st_echarts(options=options, height=height, theme=theme)
+    if write_s and s is not None:
+        st.write(s)
+    st.markdown("<div style='text-align:right; color:lightblue; font-style:italic; font-size:small;'>⚠ Has utilizado una petición API. Respuesta elaborada con datos directamente del DataBase. ⚠</div>", unsafe_allow_html=True)
 
 def render_pie_chart_marca(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Marca"]} for d in data]
@@ -34,10 +39,7 @@ def render_pie_chart_marca(data):
             }
         ],
     }
-
-    s = st_echarts(options=options, height="550px", theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_pie_chart_family(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Familia"]} for d in data]
@@ -63,9 +65,7 @@ def render_pie_chart_family(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_pie_chart_comunidad_autonoma(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["ComunidadAutonoma"]} for d in data]
@@ -91,9 +91,7 @@ def render_pie_chart_comunidad_autonoma(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_pie_chart_comunidad_autonoma_barra(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["ComunidadAutonoma"]} for d in data]
@@ -131,9 +129,7 @@ def render_pie_chart_comunidad_autonoma_barra(data):
         ],
     }
 
-    s = st_echarts(options=options, height="550px", theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_bar_chart_monthly_revenue_client(data, key=None):
     data_dict = data[0] if data else {}
@@ -203,9 +199,7 @@ def render_bar_chart_monthly_revenue_client(data, key=None):
             }
         ],
     }
-    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_bar_chart_monthly_revenue_client_ing(data, key=None):
     data_dict = data[0] if data else {}
@@ -265,9 +259,7 @@ def render_bar_chart_monthly_revenue_client_ing(data, key=None):
             }
         ],
     }
-    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
-    if s is not None:
-        st.write(s)
+    display_chart_and_warning(options, write_s=True)
 
 def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
     data_dict = data[0] if data else {}
@@ -325,10 +317,7 @@ def render_bar_chart_monthly_revenue_monthly_year(data, key=None):
             }
         ],
     }
-    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
-    if s is not None:
-        st.write(s)
-    st.markdown("<span style='color:lightblue; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo FineTuned. Respuesta elaborada con datos directamente del DataBase. ⚠</span>", unsafe_allow_html=True)
+    display_chart_and_warning(options, key=key, write_s=True)
     
 
 
@@ -391,69 +380,7 @@ def render_bar_chart_monthly_revenue_monthly_year_ing(data, key=None):
             }
         ],
     }
-    s = st_echarts(options=options, height="550px", key=key ,theme="dark")
-    if s is not None:
-        st.write(s)
-
-
-###############
-DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-if 'show_chart' not in st.session_state:
-    st.session_state.show_chart = []
-
-def render_bar_chart_anual_revenue(data, key=None):
-    
-    anuales_data = data[0]["IngresosAnuales"]
-
-    prepared_data = [
-        {"value": float(d["Cantidad"].split(" ")[0].replace(",", ".")), "year": str(d["Año"])}
-        for d in anuales_data
-    ]
-
-    total_sum = round(sum(d["value"] for d in prepared_data), 2)
-
-    options = {
-        "backgroundColor": "#0E1117",
-        "title": {
-            "text": f"Facturaciones Anuales (Total: {total_sum} €)",
-            "left": "center"
-        },
-        "tooltip": {"trigger": "item"},
-        "xAxis": {
-            "type": "category",
-            "data": [d["year"] for d in prepared_data],
-        },
-        "yAxis": {"type": "value"},
-        "series": [
-            {
-                "year": "Cantidad",
-                "type": "bar",
-                "data": [d["value"] for d in prepared_data],
-                "label": {
-                    "show": True,
-                    "position": "inside",
-                    "formatter": "{c} €"
-                },
-                
-            }
-        ],
-    }
-
-    events = {
-        "click": "function(params) { return params.dataIndex; }"
-    }
-
-    s = st_echarts(options=options, events=events, height="550px", key=key, theme="dark")
-    
-    if s is not None:
-        selected_year = [d["year"] for d in prepared_data][int(s)]
-        api_response_url = f"/api/alb_stat?fact_sy={selected_year}"
-        full_url = DOMINIO + api_response_url
-        response = requests.get(full_url)
-        if response.status_code == 200:
-            monthly_data = response.json()
-            render_bar_chart_monthly_revenue_monthly_year(monthly_data, key=f'render_chart_total')
-##################
+    display_chart_and_warning(options, write_s=True)
 
 def render_grouped_bar_chart_fact(data, key=None):
     years = [str(d['Año']) for d in data]
@@ -518,7 +445,7 @@ def render_grouped_bar_chart_fact(data, key=None):
         'series': series_data
     }
 
-    st_echarts(options=options, height="550px", key=key, theme="dark")
+    display_chart_and_warning(options, key=key)
 
 def render_grouped_bar_chart_fact_cli_3_years(data, key=None):
     years = [str(d['Año']) for d in data]
@@ -584,7 +511,8 @@ def render_grouped_bar_chart_fact_cli_3_years(data, key=None):
         'series': series_data
     }
 
-    st_echarts(options=options, height="550px", key=key, theme="dark")
+    display_chart_and_warning(options, key=key)
+
 
 def render_grouped_bar_chart_ing(data, key=None):
     years = [str(d['Año']) for d in data]
@@ -649,7 +577,8 @@ def render_grouped_bar_chart_ing(data, key=None):
         'series': series_data
     }
 
-    st_echarts(options=options, height="550px", key=key, theme="dark")
+    display_chart_and_warning(options, key=key)
+
 
 def render_grouped_bar_chart_ing_cli_3_years(data, key=None):
     years = [str(d['Año']) for d in data]
@@ -715,4 +644,4 @@ def render_grouped_bar_chart_ing_cli_3_years(data, key=None):
         'series': series_data
     }
 
-    st_echarts(options=options, height="550px", key=key, theme="dark")
+    display_chart_and_warning(options, key=key)

@@ -10,7 +10,7 @@ import streamlit as st
 last_assistant_response = None
 
 def XatBot_Llama():
-    st.title('En construcción')
+    st.title('En construcción 🚧')
 #     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 #     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
