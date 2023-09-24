@@ -16,11 +16,11 @@ st.set_page_config(
 
 logo()
 
-page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama", "Estadísticas"])
+page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama"])
 
 if page == "ChatBot":
     chat_bot()
-elif page == "Estadísticas":
-    show_stats_page()
+# elif page == "Estadísticas":
+#     show_stats_page()
 elif page == "Chatbot Llama":
     XatBot_Llama()

@@ -29,51 +29,85 @@ def footer():
 def clear_chat_history():
     st.session_state.chat_history = []
 
+import streamlit as st
+
 def display_sidebar_info():
     with st.sidebar.expander("🎯 Ejemplos", False):
-        st.markdown("""
-        <h4 style='font-size: smaller;'>Clientes</h4>
-        <ul style='font-size: smaller;'>
-            <li>Dona'm info del client GRK</li>
-            <li>telefono Maria Lopez</li>
-            <li>tlf de clientes GRK y Pepito</li>
-            <li>Toda info cliente John Doe</li>   
-            <li> ¿De quién es el tlf 955555555?</li>
-            <li> Email de Global Data</li>                 
-        </ul>
+        option = st.selectbox(
+            'Selecciona una categoría',
+            ('Clientes', 'Artículos', 'Albaranes', 'Finanzas', 'Otros')
+        )
         
-        <h4 style='font-size: smaller;'>Artículos</h4>
-        <ul style='font-size: smaller;'>
-            <li>info article Apple</li>
-            <li>toda info articulo Razer Blackwidow</li>
-            <li>Precio Venta articulo MacBook Air</li>
-            <li>Info del artículo 1014</li>
-            <li>991670248910</li>
-        </ul>
-        
-        <h4 style='font-size: smaller;'>Albaranes</h4>
-        <ul style='font-size: smaller;'>
-            <li>¿Cual es el albaran 1012?</li>
-            <li>Albarán 1014</li>
-        </ul>
-        
-        <h4 style='font-size: smaller;'>Finanzas</h4>
-        <ul style='font-size: smaller;'>
-            <li>Facturacion de la empresa</li>
-            <li>Facturacion total</li>
-            <li>Facturacion año 2021</li>
-            <li>Ganancias totales</li>
-            <li>Facturación cliente Pepito grillo</li>
-            <li>ingresos totales cliente Ultra Tech</li>
-        </ul>
-        
-        <h4 style='font-size: smaller;'>Otros</h4>
-        <ul style='font-size: smaller;'>
-            <li>Quien ha creado el chatbot?</li>
-            <li>¿Cómo funciona este chat?</li>
-            <li>Los datos son inventados?</li>
-        </ul>
-        """, unsafe_allow_html=True)
+        if option == 'Clientes':
+            st.write("""
+            * Dona'm info del client GRK
+            * telefono Maria Lopez
+            * tlf de clientes GRK y Pepito
+            * Toda info cliente John Doe
+            * ¿De quién es el tlf 955555555?
+            * Email de Global Data
+            * Quién es el cliente Pedro Muñoz?
+            * Dame emails de GRK y de i-and
+            * ¿Cómo puedo contactar con Ana Belen?
+            * Adreça de Andorra Telecom
+            * El teléfono 941123456 ¿De quién es?
+            * info de clientes Telecom y Ultra Tech
+                     
+            """)
+        elif option == 'Artículos':
+            st.write("""
+            * info article Apple
+            * toda info articulo Razer Blackwidow
+            * Precio Venta articulo MacBook Air
+            * Info del artículo 1014
+            * 991670248910
+            * Art 1013
+            * Dame precio de compra de RTX 3080
+            * Dame toda la info del art 2023
+            * Tot info art 2017, en format llista
+            * Información completa artículo 2024 
+            * Stock article Sony WH-1000XM4
+            * Dame la descripcion del articulo airpods                             
+            """)
+
+        elif option == 'Albaranes':
+            st.write("""
+            * ¿Cuál es el albaran 1012?
+            * Albarán 1014
+            * Albara 1005, quin es el marge
+            * ¿Puedo ver el albarán 2023?
+            * ver albaràn 2050
+            * Albaràn 1021, de que cliente es?
+            * Alb 1022 ¿Está facturado?
+            * Albarà 1023, dona'm el nº del pedido
+            """)
+
+        elif option == 'Finanzas':
+            st.write("""
+            * Facturacion de la empresa
+            * ¿Cuánto hemos facturado este año?
+            * Facturacion total
+            * ¿Quál es la facturación total en últimos años?
+            * Facturacion año 2021
+            * ¿Cuánto facturamos en 2022?                     
+            * Ganancias de la empresa
+            * ¿Cuál es nuestra rentabilidad anual hasta la fecha?
+            * Ganancias totales
+            * ¿Cuánto hemos ingresado en 2022?
+            * Facturación cliente Pepito grillo
+            * ingresos totales cliente Ultra Tech
+            """)
+
+        elif option == 'Otros':
+            st.write("""
+            * Quien ha creado el chatbot?
+            * ¿Cómo funciona este chat?
+            * Los datos son inventados?
+            * ¿Cómo te conectas a la DB?
+            * Hi ha algun tipus de revisió humana?
+            * Sobre qué puedo preguntarte?
+            """)
+
     st.sidebar.button('Borrar Historial', on_click=clear_chat_history)
 
     footer()
@@ -81,18 +115,20 @@ def display_sidebar_info():
 def display_main_info():
     st.info(
         """
-        #### **Bienvenido al chatbot de GRK Tech**
+        #### **Bienvenido al chatbot de IAND**
 
         Este chatbot inteligente te permite hacer consultas directas con lenguaje natural a nuestra base de datos de MongoDB.
 
-        Utiliza un modelo de lenguaje Fine-Tuned (Entrenado con ADA) para enviar peticiones url a nuestra API y las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI a partir de los resultados obtenidos.
-        Si no hay resultados o tenemos un error, el modelo GPT-3.5 FineTuned dará la respuesta.
+        Utilizamos un modelo de lenguaje afinado, específicamente entrenado con Babbage-002, para gestionar las solicitudes URL hacia nuestra API que se integra con la base de datos. 
+        Las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI, basadas en los datos recuperados. En caso de ausencia de resultados o errores, un modelo 
+        GPT-3.5 Fine-Tuned se encargará de proporcionar la respuesta adecuada. Aunque la mayoría de los datos en la base de datos son ficticios, son completamente auténticos 
+        en su estructura. Adicionalmente, se han incorporado datos públicos relacionados con empresas tecnológicas de Andorra para enriquecer la información disponible.
 
         ##### ¿Qué puedes hacer?
-        - 👤 **Clientes**: Buscar información detallada de clientes, como contacto y facturación.
+        - 👤 **Clientes**: Buscar información detallada de clientes.
         - 🛒 **Artículos**: Consultar detalles de artículos, incluyendo precios y stock.
         - 🧾 **Albaranes**: Obtener información sobre albaranes específicos.
-        - 📊 **Finanzas**: Para consultas financieras, el sistema envía la petición directamente al servidor y muestra los datos en forma de gráfico, sin pasar por GPT 3.5.
+        - 📊 **Finanzas**: Consultas de facturación e ingresos de la empresa y cliente, este resultado se realiza sin pasar por GPT-3.5, directo de la API.
 
         ⬅️ **Ejemplos de preguntas** que puedes hacer se encuentran en el menú de la izquierda.
 

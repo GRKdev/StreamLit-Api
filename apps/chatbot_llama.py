@@ -2,6 +2,10 @@
 # import os
 import streamlit as st
 from utils.sidebar_info import footer
+from PIL import Image
+import base64
+
+
 # import requests
 # import re
 # from llama_index import VectorStoreIndex, ServiceContext
@@ -11,7 +15,8 @@ from utils.sidebar_info import footer
 last_assistant_response = None
 
 def XatBot_Llama():
-    st.title('En construcción 🚧')
+    image = Image.open('IMG/light-uc.png')
+    st.image(image, use_column_width=False,  width=500)
 #     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 #     OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 
