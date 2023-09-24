@@ -1,7 +1,7 @@
 import streamlit as st
-from chat_bot import chat_bot
-from chatbot_llama import XatBot_Llama
-from stats import show_stats_page
+from apps.chat_bot import chat_bot
+from apps.chatbot_llama import XatBot_Llama
+from apps.stats import show_stats_page
 from utils.sidebar_info import logo
 
 st.set_page_config(
