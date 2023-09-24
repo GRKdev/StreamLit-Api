@@ -2,6 +2,7 @@ import streamlit as st
 from chat_bot import chat_bot
 from chatbot_llama import XatBot_Llama
 from stats import show_stats_page
+from utils.sidebar_info import logo
 
 st.set_page_config(
     page_title="Chabot - GRK",
@@ -13,6 +14,7 @@ st.set_page_config(
     }
 )
 
+logo()
 page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama", "Estadísticas"])
 
 if page == "ChatBot":

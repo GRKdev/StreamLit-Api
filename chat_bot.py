@@ -9,7 +9,7 @@ from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_
 def chat_bot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
     token = create_jwt()
-    
+
     display_main_info()
     display_sidebar_info() 
 

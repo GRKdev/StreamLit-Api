@@ -2,6 +2,28 @@ import streamlit as st
 import requests
 import os
 from utils.generate_token import create_jwt
+from PIL import Image
+import base64
+from io import BytesIO
+
+
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode()
+
+def logo():
+    logo = Image.open("utils/logo.png")
+    st.sidebar.markdown(
+        f'<div style="text-align: center"><img src="data:image/png;base64,{image_to_base64(logo)}" style="width:200px;"></div>',
+        unsafe_allow_html=True,
+    )
+    
+def footer():
+    st.sidebar.divider()  
+    st.sidebar.markdown(
+    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev/StreamLit-Api">GRKdev</a></h6>',
+    unsafe_allow_html=True)
 
 def clear_chat_history():
     st.session_state.chat_history = []
@@ -52,11 +74,8 @@ def display_sidebar_info():
         </ul>
         """, unsafe_allow_html=True)
     st.sidebar.button('Borrar Historial', on_click=clear_chat_history)
-    st.sidebar.divider()  
-    st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev/StreamLit-Api">GRKdev</a></h6>',
-    unsafe_allow_html=True)
-    
+
+    footer()
 
 def display_main_info():
     st.info(
@@ -159,9 +178,4 @@ def display_sidebar_info_stats():
             data = make_authenticated_request("/api/alb_stat?cli_ing_cy=grk")
             if data:
                 st.session_state.show_chart.insert(0, ("ganancia_client", data))
-
-    st.sidebar.divider()  
-    st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev/StreamLit-Api">@GRKdev</a></h6>',
-    unsafe_allow_html=True,
-    )
+    footer()
