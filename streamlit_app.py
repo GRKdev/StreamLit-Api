@@ -5,8 +5,8 @@ from stats import show_stats_page
 from utils.sidebar_info import logo
 
 st.set_page_config(
-    page_title="Chabot - GRK",
-    page_icon="🎛",
+    page_title="Chatbot - GRK",
+    page_icon="utils/favicon.ico",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
@@ -15,6 +15,7 @@ st.set_page_config(
 )
 
 logo()
+
 page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama", "Estadísticas"])
 
 if page == "ChatBot":
