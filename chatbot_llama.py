@@ -1,6 +1,7 @@
 # import openai
 # import os
 import streamlit as st
+from utils.sidebar_info import footer
 # import requests
 # import re
 # from llama_index import VectorStoreIndex, ServiceContext
@@ -88,11 +89,7 @@ def XatBot_Llama():
 #         *¿Cual es el albaran 1012?*
                     
 #         """)
-    st.sidebar.divider()  
-    st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev/StreamLit-Api">GRKdev</a></h6>',
-    unsafe_allow_html=True,
-)
+    footer()
 
 #     @st.cache_resource(show_spinner=False)
 #     def load_data():

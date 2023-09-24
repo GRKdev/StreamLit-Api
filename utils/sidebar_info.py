@@ -13,16 +13,17 @@ def image_to_base64(image):
     return base64.b64encode(buffered.getvalue()).decode()
 
 def logo():
-    logo = Image.open("utils/logo.png")
+    logo = Image.open("IMG/logo.png")
     st.sidebar.markdown(
         f'<div style="text-align: center"><img src="data:image/png;base64,{image_to_base64(logo)}" style="width:200px;"></div>',
         unsafe_allow_html=True,
     )
-    
+
 def footer():
+    logo_grk = Image.open("IMG/grk_logo.png")
     st.sidebar.divider()  
     st.sidebar.markdown(
-    '<h6>Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by <a href="https://github.com/GRKdev/StreamLit-Api">GRKdev</a></h6>',
+    f'<h6 style="text-align: center">Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by &nbsp<a href="https://github.com/GRKdev/StreamLit-Api"><img src="data:image/png;base64,{image_to_base64(logo_grk)}" alt="GRK" height="16"&nbsp</a></h6>',
     unsafe_allow_html=True)
 
 def clear_chat_history():
