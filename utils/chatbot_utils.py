@@ -16,6 +16,8 @@ secret_key = st.secrets["OPENAI_MODEL_35"]
 model_name = ":".join(secret_key.split(":")[1:4])
 OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
+openai.api_base = "https://oai.hconeai.com/v1"
+HELICONE_AUTH = st.secrets.get("HELICONE_AUTH", os.getenv("HELICONE_AUTH"))
 
 last_assistant_response = None
 
@@ -27,6 +29,9 @@ def ask_fine_tuned_ada(prompt):
         n=1,
         stop="&&",
         temperature=0,
+        headers={
+        "Helicone-Auth": HELICONE_AUTH,
+      }
     )
     api_response = response.choices[0].text.strip()
     api_response = api_response.strip()
@@ -47,7 +52,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     messages_list = [
             {
             "role": "system",
-            "content": "Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista. Proporciona una respuesta clara, coherente y útil. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Cuando manejes cifras monetarias, hazlo así 40 €."
+            "content": "Recibirás preguntas del usuario junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista. Proporciona una respuesta clara, coherente y útil. Asegúrate de presentar la información de forma amena y fácil de entender para el usuario. Cuando manejes cifras monetarias, hazlo así 40 €. No ofrezcas vender o comprar los artículos."
             }
     ]
     if last_assistant_response:
@@ -78,6 +83,9 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         stop=None,
         temperature=0,
         stream=True,
+        headers={
+        "Helicone-Auth": HELICONE_AUTH,
+      }        
     ):
         full_response += response.choices[0].delta.get("content", "")
         placeholder.markdown(full_response + "▌")
@@ -120,6 +128,9 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         stop=None,
         temperature=0.1,
         stream=True,
+        headers={
+        "Helicone-Auth": HELICONE_AUTH,
+      }        
     ):
         full_response += response.choices[0].delta.get("content", "")
         placeholder.markdown(full_response + "▌")
