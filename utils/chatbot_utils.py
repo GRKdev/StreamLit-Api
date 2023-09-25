@@ -18,6 +18,9 @@ OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
 openai.api_base = "https://oai.hconeai.com/v1"
 HELICONE_AUTH = st.secrets.get("HELICONE_AUTH", os.getenv("HELICONE_AUTH"))
+HELICONE_SESSION = st.secrets.get("HELICONE_SESSION", os.getenv("HELICONE_SESSION"))
+
+
 
 last_assistant_response = None
 
@@ -31,6 +34,7 @@ def ask_fine_tuned_ada(prompt):
         temperature=0,
         headers={
         "Helicone-Auth": HELICONE_AUTH,
+        "Helicone-Property-Session": HELICONE_SESSION
       }
     )
     api_response = response.choices[0].text.strip()
