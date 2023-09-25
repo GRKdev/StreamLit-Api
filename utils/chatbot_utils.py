@@ -47,8 +47,6 @@ def ask_fine_tuned_ada(prompt):
     else:
         sanitized_response = api_response
 
-    print(f"Sanitized Response: {sanitized_response}")
-
     return sanitized_response
 
 def ask_gpt(prompt, placeholder, additional_context=None):
@@ -89,6 +87,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         stream=True,
         headers={
         "Helicone-Auth": HELICONE_AUTH,
+        "Helicone-Property-Session": HELICONE_SESSION
       }        
     ):
         full_response += response.choices[0].delta.get("content", "")
@@ -134,6 +133,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         stream=True,
         headers={
         "Helicone-Auth": HELICONE_AUTH,
+        "Helicone-Property-Session": HELICONE_SESSION
       }        
     ):
         full_response += response.choices[0].delta.get("content", "")
@@ -146,7 +146,6 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
 
 
 def generate_response_from_mongo_results(data):
-    print(f"data: {data}") 
     if not data:
         return "No se encontraron resultados."
     else:

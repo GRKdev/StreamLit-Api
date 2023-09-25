@@ -35,10 +35,8 @@ def chat_bot():
 
             if 'api/' in api_response_url:
                 full_url = DOMINIO + api_response_url
-                print(full_url)
                 headers = {'Authorization': f'Bearer {token}'}
                 response = requests.get(full_url, headers=headers)
-                print(response)
             else:
                 response = None
 
