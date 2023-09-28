@@ -110,7 +110,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     messages_list = [
         {
             "role": "system",
-            "content": "Eres un asistente de la empresa GRK Tech que tiene acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario. Puede que recibas un error de DB.",
+            "content": "Eres un asistente de la empresa IAND que tiene acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario. Puede que recibas un error de DB.",
         },
         {
             "role": "system",
@@ -140,7 +140,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         max_tokens=1000,
         n=1,
         stop=None,
-        temperature=0.2,
+        temperature=0.4,
         stream=True,
         headers={
             "Helicone-Auth": HELICONE_AUTH,

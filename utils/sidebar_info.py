@@ -28,6 +28,8 @@ def footer():
 
 def clear_chat_history():
     st.session_state.chat_history = []
+    last_assistant_response = None
+
 
 import streamlit as st
 
