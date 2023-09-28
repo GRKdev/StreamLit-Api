@@ -14,7 +14,7 @@ def display_chart_and_warning(options, key=None, height="500px", theme="dark", w
     s = st_echarts(options=options, height=height, key=key, theme=theme) if key else st_echarts(options=options, height=height, theme=theme)
     if write_s and s is not None:
         st.write(s)
-    st.markdown("<div style='text-align:right; color:lightblue; font-style:italic; font-size:small;'>⚠ Has utilizado una petición API. Respuesta elaborada con datos directamente del DataBase. ⚠</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:right; color:lightblue; font-size:small;'>📊 Petición API. Resultados con datos directos de la base de datos.</div>", unsafe_allow_html=True)
 
 def render_pie_chart_marca(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Marca"]} for d in data]

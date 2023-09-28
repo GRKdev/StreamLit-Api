@@ -3,17 +3,22 @@ import streamlit as st
 import requests
 from utils.sidebar_info import display_sidebar_info, display_main_info
 from utils.generate_token import create_jwt
-from utils.key_check import run_key_check
+from utils.key_check import run_key_check, get_openai_key
 from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_fine_tuned_api
+import openai
 
 def chat_bot():
+    session_state = st.session_state
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
     token = create_jwt()
-
+    api_key = get_openai_key(session_state)
     display_main_info()
-    display_sidebar_info() 
+    display_sidebar_info()
 
-    if run_key_check():
+    if api_key:
+        openai.api_key = api_key
+
+    if run_key_check(session_state):
         st.session_state.chat_history = st.session_state.get('chat_history', [])
         for message in st.session_state.chat_history:
             with st.chat_message(message["role"]):

@@ -1,47 +1,42 @@
 import streamlit as st
 import openai
 
-def run_key_check():
-    iteration = 0
-    while True:
-        api_key_status = check_for_openai_key(iteration)
-        iteration += 1
 
-        if api_key_status == "provided":
-            try:
-                openai.api_key = st.session_state.api_key
-                openai.Completion.create(engine="text-davinci-003", prompt="test", max_tokens=5)
-                with st.chat_message("Assistant"):
-                    st.write("¡Empezemos a chatear!")
-                return True
-            except openai.error.AuthenticationError:
-                with st.chat_message("Assistant"):
-                    st.warning('Porfavor introduce una clave válida de OpenAI!', icon='⚠')
-                del st.session_state.api_key
-        else:
-            continue
-
-def check_for_openai_key(iteration):
-    key = f"key_{iteration}"
-    if 'api_key' not in st.session_state:
-        st.session_state.api_key = ''
-
-    if st.session_state.api_key and len(st.session_state.api_key) > 10:
-        return "provided"
+def run_key_check(session_state):
+    message_placeholder = st.empty()
     
-    with st.chat_message("Assistant"):
-        mp = st.empty()
-        sl = mp.container()
-        sl.write(
-            """Hola, es fantástico que quieras chatear conmigo. Sin embargo, necesito tu clave API de OpenAI para funcionar.
-            Si no tienes una clave, puedes registrarte y crear una aquí https://platform.openai.com/account/api-keys.
-            No te preocupes, tu clave no se almacenará de ninguna forma, excepto durante tu sesión actual.
-            """
-        )
-        openai_api_key = sl.text_input('🔑 OpenAI API Key', type='password', key=key)
+    input_value = st.text_input('🔑 OpenAI API Key o Password', type='password', key="unique_input_key", placeholder="Escribe aquí..")
+    
+    if len(input_value) <= 10 and len(input_value) > 0:
+        stored_password = st.secrets.get("PASSWORD")
+        stored_openai_key = st.secrets.get("OPENAI_API_KEY")
+        
+        if input_value == stored_password:
+            set_openai_key(session_state, stored_openai_key)
+            with st.chat_message("Assistant"):
+                st.write("¡Empezemos a chatear!")
+            return True
+        else:
+            message_placeholder.warning('Password incorrecto', icon="🔒")
+    
+    elif len(input_value) > 10:
+        try:
+            openai.api_key = input_value
+            openai.Completion.create(engine="text-davinci-003", prompt="test", max_tokens=5)
+            set_openai_key(session_state, input_value)
+            with st.chat_message("Assistant"):
+                st.write("¡Empezemos a chatear!")
+            return True
+        except openai.error.AuthenticationError:
+            message_placeholder.warning('Por favor, introduce una clave válida de OpenAI!', icon="⚠️")
+    
+    return False
 
-        if openai_api_key:
-            st.session_state.api_key = openai_api_key
-            return "provided"
-    st.stop()
-    return "invalid"
+def get_openai_key(session_state):
+    if 'api_key' in session_state:
+        return session_state['api_key']
+    else:
+        return None
+
+def set_openai_key(session_state, api_key):
+    session_state['api_key'] = api_key

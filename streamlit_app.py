@@ -15,7 +15,6 @@ st.set_page_config(
 )
 
 logo()
-st.sidebar.divider()
 chat_bot()  # Chatbot
 # page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama"])
 

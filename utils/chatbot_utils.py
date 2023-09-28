@@ -59,7 +59,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     messages_list = [
         {
             "role": "system",
-            "content": "Eres un conector que proporciona información interna de una DB a los usuarios de la empresa.",
+            "content": "Eres un conector que proporciona información interna de una DB a los usuarios de la empresa. Eres directo y conciso.",
         },        
         {
             "role": "system",
@@ -67,7 +67,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Nunca sugieras al usuario que realice una compra o venta.",
+            "content": "Nunca sugieras al usuario que realice una compra o venta. Tampoco tengas muletilla de despedirte ni ofrecer más información.",
         },
     ]
     if additional_context:
@@ -171,7 +171,7 @@ def default_handler(data, message_placeholder, user_input):
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
     st.markdown(
-        f"<div style='text-align:right; color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa el resultado. ⚠</div>",
+        f"<div style='text-align:right; color:green; font-size:small;'>✅ Modelo: {model_name_ft}. Respuesta elaborada con datos DataBase y GPT-3.5. Revisa el resultado.</div>",
         unsafe_allow_html=True,
     )
 
@@ -216,6 +216,6 @@ def handle_gpt_ft_message(
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
     st.markdown(
-        f"<div style='text-align:right; color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo de GPT-3.5: {model_name}. Los datos pueden ser erróneos. ⚠</div>",
+        f"<div style='text-align:right; color:red; font-size:small;'>⚠️ Modelo: GPT-3.5-{model_name}. Los datos pueden ser erróneos.</div>",
         unsafe_allow_html=True,
     )
