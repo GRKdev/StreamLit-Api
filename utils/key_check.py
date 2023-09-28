@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 
-def run_key_check_loop():
+def run_key_check():
     iteration = 0
     while True:
         api_key_status = check_for_openai_key(iteration)

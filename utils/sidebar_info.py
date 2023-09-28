@@ -43,72 +43,77 @@ def display_sidebar_info():
         
         if option == 'Clientes':
             st.write("""
-            * Dona'm info del client GRK
-            * telefono Maria Lopez
-            * tlf de clientes GRK y Pepito
-            * Toda info cliente John Doe
-            * ¿De quién es el tlf 955555555?
-            * Email de Global Data
-            * Quién es el cliente Pedro Muñoz?
-            * Dame emails de GRK y de i-and
-            * ¿Cómo puedo contactar con Ana Belen?
-            * Adreça de Andorra Telecom
-            * El teléfono 941123456 ¿De quién es?
-            * info de clientes Telecom y Ultra Tech
+                    * Dona'm info del client GRK
+                    * telefono Maria Lopez
+                    * tlf de clientes GRK y Pepito
+                    * Toda info cliente John Doe
+                    * ¿De quién es el tlf 955555555?
+                    * Email de Global Data
+                    * Quién es el cliente Pedro Muñoz?
+                    * Dame emails de GRK y de i-and
+                    * ¿Cómo puedo contactar con Ana Belen?
+                    * Adreça de Andorra Telecom
+                    * El teléfono 941123456 ¿De quién es?
+                    * info de clientes Telecom y Ultra Tech
                      
             """)
         elif option == 'Artículos':
             st.write("""
-            * info article Apple
-            * toda info articulo Razer Blackwidow
-            * Precio Venta articulo MacBook Air
-            * Info del artículo 1014
-            * 991670248910
-            * Art 1013
-            * Dame precio de compra de RTX 3080
-            * Dame toda la info del art 2023
-            * Tot info art 2017, en format llista
-            * Información completa artículo 2024 
-            * Stock article Sony WH-1000XM4
-            * Dame la descripcion del articulo airpods                             
+                    * info article Apple
+                    * toda info articulo Razer Blackwidow
+                    * Precio Venta articulo MacBook Air
+                    * Info del artículo 1014
+                    * 991670248910
+                    * Art 1013
+                    * Dame precio de compra de RTX 3080
+                    * Dame toda la info del art 2023
+                    * Tot info art 2017, en format llista
+                    * Información completa artículo 2024 
+                    * Stock article Sony WH-1000XM4
+                    * Dame la descripcion del articulo airpods                             
             """)
 
         elif option == 'Albaranes':
             st.write("""
-            * ¿Cuál es el albaran 1012?
-            * Albarán 1014
-            * Albara 1005, quin es el marge
-            * ¿Puedo ver el albarán 2023?
-            * ver albaràn 2050
-            * Albaràn 1021, de que cliente es?
-            * Alb 1022 ¿Está facturado?
-            * Albarà 1023, dona'm el nº del pedido
+                    * ¿Cuál es el albaran 1012?
+                    * Albarán 1014
+                    * Albara 1005, quin es el marge
+                    * ¿Puedo ver el albarán 2023?
+                    * ver albaràn 2050
+                    * Albaràn 1021, de que cliente es?
+                    * Alb 1022 ¿Está facturado?
+                    * Albarà 1023, dona'm el nº del pedido
             """)
 
         elif option == 'Finanzas':
             st.write("""
-            * Facturacion de la empresa
-            * ¿Cuánto hemos facturado este año?
-            * Facturacion total
-            * ¿Quál es la facturación total en últimos años?
-            * Facturacion año 2021
-            * ¿Cuánto facturamos en 2022?                     
-            * Ganancias de la empresa
-            * ¿Cuál es nuestra rentabilidad anual hasta la fecha?
-            * Ganancias totales
-            * ¿Cuánto hemos ingresado en 2022?
-            * Facturación cliente Pepito grillo
-            * ingresos totales cliente Ultra Tech
+                    * Facturacion de la empresa
+                    * ¿Cuánto hemos facturado este año?
+                    * Facturacion total
+                    * ¿Quál es la facturación total en últimos años?
+                    * Facturacion año 2021
+                    * ¿Cuánto facturamos en 2022?                     
+                    * Ganancias de la empresa
+                    * ¿Cuál es nuestra rentabilidad anual hasta la fecha?
+                    * Ganancias totales
+                    * ¿Cuánto hemos ingresado en 2022?
+                    * Facturación cliente Pepito grillo
+                    * ingresos totales cliente Ultra Tech
             """)
 
         elif option == 'Otros':
             st.write("""
-            * Quien ha creado el chatbot?
-            * ¿Cómo funciona este chat?
-            * Los datos son inventados?
-            * ¿Cómo te conectas a la DB?
-            * Hi ha algun tipus de revisió humana?
-            * Sobre qué puedo preguntarte?
+                    * ¿Qué es iand.dev?
+                    * Quien ha creado el chatbot?
+                    * ¿Cómo funciona este chat?
+                    * Los datos son inventados?
+                    * ¿Cómo te conectas a la DB?
+                    * Hi ha algun tipus de revisió humana?
+                    * Sobre qué puedo preguntarte?
+                    * Quién está detrás de tu desarrollo?
+                    * ¿Cómo puedo reportar un error?
+                    * ¡Eres terrible!
+            
             """)
 
     st.sidebar.button('Borrar Historial', on_click=clear_chat_history)

@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 from utils.sidebar_info import display_sidebar_info, display_main_info
 from utils.generate_token import create_jwt
-from utils.key_check import run_key_check_loop
+from utils.key_check import run_key_check
 from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_fine_tuned_api
 
 def chat_bot():
@@ -13,7 +13,7 @@ def chat_bot():
     display_main_info()
     display_sidebar_info() 
 
-    if run_key_check_loop():
+    if run_key_check():
         st.session_state.chat_history = st.session_state.get('chat_history', [])
         for message in st.session_state.chat_history:
             with st.chat_message(message["role"]):

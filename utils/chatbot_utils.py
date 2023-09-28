@@ -138,7 +138,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         max_tokens=1000,
         n=1,
         stop=None,
-        temperature=0.1,
+        temperature=1,
         stream=True,
         headers={
             "Helicone-Auth": HELICONE_AUTH,
