@@ -16,12 +16,10 @@ from utils.chart_utils import (
 )
 
 OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
-secret_key_ft = st.secrets["OPENAI_MODEL"]
-model_name_ft = ":".join(secret_key_ft.split(":")[1:4])
+model_name_ft = st.secrets["OPENAI_MODEL"].split(":")[3].upper()
 
 OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
-secret_key = st.secrets["OPENAI_MODEL_35"]
-model_name = ":".join(secret_key.split(":")[1:4])
+model_name = st.secrets["OPENAI_MODEL_35"].split(":")[3].upper()
 
 openai.api_base = "https://oai.hconeai.com/v1"
 HELICONE_AUTH = st.secrets.get("HELICONE_AUTH", os.getenv("HELICONE_AUTH"))
@@ -29,7 +27,7 @@ HELICONE_SESSION = st.secrets.get("HELICONE_SESSION", os.getenv("HELICONE_SESSIO
 
 last_assistant_response = None
 
-def ask_fine_tuned_ada(prompt):
+def ask_fine_tuned_api(prompt):
     response = openai.Completion.create(
         engine=OPEN_AI_MODEL,
         prompt=prompt,
@@ -110,11 +108,11 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     messages_list = [
         {
             "role": "system",
-            "content": "Eres un asistente de la empresa IAND que tiene acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario. Puede que recibas un error de DB.",
+            "content": "Eres un asistente de la empresa IAND creado por GRKdev. Tienes acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario. Puede que recibas un error de DB.",
         },
         {
             "role": "system",
-            "content": "Recuerda leer el contexto, si obtienes 'error' formula una respuesta en base al error y el promp del User, si no sabes la respuesta admítelo.",
+            "content": "Recuerda leer el contexto, si obtienes 'error' formula una respuesta en base al error y el promp del User, si no sabes la respuesta admítelo. Si el resultado del error es None, ignóralo.",
         }        
     ]
     if last_assistant_response:
@@ -140,7 +138,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         max_tokens=1000,
         n=1,
         stop=None,
-        temperature=0.4,
+        temperature=0.1,
         stream=True,
         headers={
             "Helicone-Auth": HELICONE_AUTH,
@@ -173,7 +171,7 @@ def default_handler(data, message_placeholder, user_input):
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
     st.markdown(
-        f"<div style='text-align:right; color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa el resultado. ⚠</div>",
+        f"<div style='text-align:right; color:green; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name_ft}. Respuesta elaborada con datos DB y GPT-3.5. Revisa el resultado. ⚠</div>",
         unsafe_allow_html=True,
     )
 
@@ -218,6 +216,6 @@ def handle_gpt_ft_message(
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
     st.markdown(
-        f"<div style='text-align:right; color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo: {model_name}. Los datos pueden ser erróneos. ⚠</div>",
+        f"<div style='text-align:right; color:red; font-style:italic; font-size:small;'>⚠ Has utilizado el modelo de GPT-3.5: {model_name}. Los datos pueden ser erróneos. ⚠</div>",
         unsafe_allow_html=True,
     )

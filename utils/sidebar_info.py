@@ -28,7 +28,8 @@ def footer():
 
 def clear_chat_history():
     st.session_state.chat_history = []
-    last_assistant_response = None
+    st.session_state.last_assistant_response = ""
+
 
 
 import streamlit as st
@@ -121,10 +122,14 @@ def display_main_info():
 
         Este chatbot inteligente te permite hacer consultas directas con lenguaje natural a nuestra base de datos de MongoDB.
 
-        Utilizamos un modelo de lenguaje afinado, específicamente entrenado con Babbage-002, para gestionar las solicitudes URL hacia nuestra API que se integra con la base de datos. 
-        Las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI, basadas en los datos recuperados. En caso de ausencia de resultados o errores, un modelo 
-        GPT-3.5 Fine-Tuned se encargará de proporcionar la respuesta adecuada. Aunque la mayoría de los datos en la base de datos son ficticios, son completamente auténticos 
-        en su estructura. Adicionalmente, se han incorporado datos públicos relacionados con empresas tecnológicas de Andorra para enriquecer la información disponible.
+        Utilizamos un modelo de lenguaje afinado entrenado con Babbage-002, para gestionar las solicitudes URL hacia nuestra API que se integra con la base de datos. 
+        Las respuestas son generadas por el modelo ChatGPT 3.5 Turbo de OpenAI, basadas en los datos recuperados. En caso de ausencia de resultados, errores o preguntas genéricas, un modelo 
+        GPT-3.5 Fine-Tuned se encargará de proporcionar la respuesta adecuada.
+        
+        Datos de los entrenamientos: Nombres ficticios de clientes y nombres de empresas públicas reales. Los datos de los artículos son reales, del mundo de la tecnología.
+        
+        Datos en la MongoDB: Aunque la mayoría son ficticios, son completamente auténticos en su estructura. Adicionalmente, se han incorporado datos públicos relacionados con
+        empresas tecnológicas de Andorra para enriquecer la información disponible.
 
         ##### ¿Qué puedes hacer?
         - 👤 **Clientes**: Buscar información detallada de clientes.

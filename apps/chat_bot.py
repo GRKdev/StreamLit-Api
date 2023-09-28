@@ -4,7 +4,7 @@ import requests
 from utils.sidebar_info import display_sidebar_info, display_main_info
 from utils.generate_token import create_jwt
 from utils.key_check import run_key_check_loop
-from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_fine_tuned_ada
+from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_fine_tuned_api
 
 def chat_bot():
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
@@ -31,7 +31,7 @@ def chat_bot():
             if (len(user_input) == 12 or len(user_input) == 13) and user_input.isdigit():
                 api_response_url = f"/api/art?bar={user_input}"
             else:
-                api_response_url = ask_fine_tuned_ada(user_input)
+                api_response_url = ask_fine_tuned_api(user_input)
 
             if 'api/' in api_response_url:
                 full_url = DOMINIO + api_response_url
