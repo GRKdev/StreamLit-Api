@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 logo()
-chat_bot()  # Chatbot
+chat_bot()
 # page = st.sidebar.radio("Menú", ["ChatBot", "Chatbot Llama"])
 
 # if page == "ChatBot":

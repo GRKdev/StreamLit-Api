@@ -20,6 +20,10 @@ def chat_bot():
 
     if run_key_check(session_state):
         st.session_state.chat_history = st.session_state.get('chat_history', [])
+
+        if not st.session_state.chat_history:
+            st.session_state.chat_history.append({"role": "assistant", "content": "¡Empezemos a chatear!"})
+
         for message in st.session_state.chat_history:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
@@ -41,7 +45,15 @@ def chat_bot():
             if 'api/' in api_response_url:
                 full_url = DOMINIO + api_response_url
                 headers = {'Authorization': f'Bearer {token}'}
-                response = requests.get(full_url, headers=headers)
+                try:
+                    response = requests.get(full_url, headers=headers)
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code in [400, 404, 500]:
+                        response = e.response
+                    else:
+                        st.warning('Error de conexión API con endpoint', icon="🔧")
+                        return
             else:
                 response = None
 
