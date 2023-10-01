@@ -101,9 +101,9 @@ def display_sidebar_info():
     elif option == 'Finanzas':
         lineas = [
             "Facturacion de la empresa",
-            "¿Cuánto hemos facturado este año?",
-            "Facturacion total",
-            "¿Quál es la facturación total en últimos años?",
+            "Facturación actual / facturación",
+            "Facturacion total / fact total",
+            "¿Cuál es la facturación en los últimos años?",
             "Facturacion año 2021",
             "¿Cuánto facturamos en 2022?",
             "Ganancias de la empresa",
