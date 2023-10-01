@@ -1,10 +1,12 @@
 import streamlit as st
 import requests
 import os
-from utils.generate_token import create_jwt
+from utils.generate_token import TokenManager
 from PIL import Image
 import base64
 from io import BytesIO
+
+token_manager = TokenManager()
 
 
 def image_to_base64(image):
@@ -172,7 +174,7 @@ def display_main_info():
 DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
 def make_authenticated_request(url):
-    token = create_jwt()
+    token = token_manager.get_token()
     headers = {'Authorization': f'Bearer {token}'}
     full_url = DOMINIO + url
     try:

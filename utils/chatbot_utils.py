@@ -15,10 +15,10 @@ from utils.chart_utils import (
     render_grouped_bar_chart_ing_cli_3_years,
 )
 
-OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
+OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 model_name_ft = st.secrets["OPENAI_MODEL"].split(":")[3].upper()
 
-OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
+OPENAI_MODEL_35 = st.secrets.get("OPENAI_MODEL_35", os.getenv("OPENAI_MODEL_35"))
 model_name = st.secrets["OPENAI_MODEL_35"].split(":")[3].upper()
 
 openai.api_base = "https://oai.hconeai.com/v1"

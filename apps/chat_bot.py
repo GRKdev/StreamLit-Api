@@ -2,15 +2,17 @@ import os
 import streamlit as st
 import requests
 from utils.sidebar_info import display_sidebar_info, display_main_info
-from utils.generate_token import create_jwt
+from utils.generate_token import TokenManager
 from utils.key_check import run_key_check, get_openai_key
 from utils.chatbot_utils import handle_chat_message, handle_gpt_ft_message, ask_fine_tuned_api
 import openai
 
+token_manager = TokenManager()
+
 def chat_bot():
     session_state = st.session_state
     DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
-    token = create_jwt()
+    token = token_manager.get_token()
     api_key = get_openai_key(session_state)
     display_main_info()
     display_sidebar_info()

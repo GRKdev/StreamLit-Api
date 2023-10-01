@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_echarts import st_echarts
+import os
 
 
 if 'saved_charts' not in st.session_state:
@@ -10,11 +11,14 @@ MONTHS = [
     'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
 ]
 
+OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
+model_name_ft = st.secrets["OPENAI_MODEL"].split(":")[3].upper()
+
 def display_chart_and_warning(options, key=None, height="500px", theme="dark", write_s=False):
     s = st_echarts(options=options, height=height, key=key, theme=theme) if key else st_echarts(options=options, height=height, theme=theme)
     if write_s and s is not None:
         st.write(s)
-    st.markdown("<div style='text-align:right; color:lightblue; font-size:small;'>📊 Petición API. Resultados con datos directos de la base de datos.</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align:right; color:lightblue; font-size:small;'>📊 Petición API con modelo: {model_name_ft}. Resultados directos de la base de datos.</div>", unsafe_allow_html=True)
 
 def render_pie_chart_marca(data):
     prepared_data = [{"value": d["Cantidad"], "name": d["Marca"]} for d in data]
