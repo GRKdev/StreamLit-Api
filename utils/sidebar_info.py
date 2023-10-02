@@ -72,7 +72,7 @@ def display_sidebar_info():
             "art 2021",
             "Dame precio de compra de RTX 3080",
             "quiero toda la info del art 2023",
-            "Tot info art 2017, en format llista",
+            "toda la info art 2017, formato lista",
             "Información completa artículo 2024",
             "Stock article Sony WH-1000XM4",
             "Dame la descripcion del articulo airpods"
