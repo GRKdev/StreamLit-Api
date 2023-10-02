@@ -14,7 +14,7 @@ El proyecto para esta fase se encuentra en [este repositorio de GitHub](https://
 Entrenamiento del modelo de fine-tuning con OpenAI.
 
 ### Fase 3: Creación de la API con Flask
-Desarrollo de una API utilizando Flask. Configuraciones de las rutas y funciones de cada ruta personalizada. Se implementa una conexión a una base de datos NoSQL de MongoDB. Actualmente subido como contenedor Docker en mi synology DS224+. Agregado tunel del puerto local a Ngrok. [URL API](https://github.com/GRKdev/api-docker-ngrok).
+Desarrollo de una API utilizando Flask. Configuraciones de las rutas y funciones de cada ruta personalizada. Se implementa una conexión a una base de datos NoSQL de MongoDB. Actualmente subido como contenedor Docker en un synology DS224+. Agregado tunel del puerto local a Ngrok. [URL API](https://github.com/GRKdev/api-docker-ngrok).
 
 ## **Fase 4: Implementación con Streamlit**
 Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chatbot con el modelo de fine-tuning devuelve una respuesta mediante una petición a la URL API. Además, el chatbot tiene accesos rápidos para ver estadísticas directamente conectadas a la base de datos a través de la API. Los resultados exitosos serán devueltos a GPT-3.5 Turbo para generar una respuesta. Si no hay resultados exitoso, o es una pregunta general, se utilizará un modelo GPT-3.5 Finetuneado para generar la respuesta.
@@ -30,6 +30,8 @@ Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chat
 - [x] Añadadido Respuesta de GPT-3.5 Turbo Finetuned para respuestas sin resultados de la base de datos
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
 - [ ] Creación de Agentes y Functiones personalizadas
+
+---
 
 # ChatBot Streamlit API NOSQL
 
