@@ -27,6 +27,7 @@ HELICONE_SESSION = st.secrets.get("HELICONE_SESSION", os.getenv("HELICONE_SESSIO
 
 last_assistant_response = None
 
+
 def ask_fine_tuned_api(prompt):
     response = openai.Completion.create(
         engine=OPEN_AI_MODEL,
@@ -55,12 +56,12 @@ def ask_fine_tuned_api(prompt):
 
 def ask_gpt(prompt, placeholder, additional_context=None):
     global last_assistant_response
-    
+
     messages_list = [
         {
             "role": "system",
             "content": "Eres un conector que proporciona información interna de una DB a los usuarios de la empresa. Eres directo y conciso.",
-        },        
+        },
         {
             "role": "system",
             "content": "Recibirás una pregunta del User junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista. Proporciona una respuesta clara, coherente y útil. Precios en €",
@@ -108,12 +109,12 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     messages_list = [
         {
             "role": "system",
-            "content": "Eres un asistente de la empresa IAND creado por GRKdev. Tienes acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario. Puede que recibas un error de DB.",
+            "content": "Eres un asistente de la empresa IAND creado por GRKdev. Tienes acceso a datos de clientes y artículos. Recibirás tu respuesta anterior y una pregunta del usuario.",
         },
         {
             "role": "system",
-            "content": "Recuerda leer el contexto, si obtienes 'error' formula una respuesta en base al error y el promp del User, si no sabes la respuesta admítelo. Si el resultado del error es None, ignóralo.",
-        }        
+            "content": "Recuerda leer el contexto, Tu respuesta anterior, la pregunta del user y si obtienes 'error' formula una respuesta en base al error y el promp del User, no inventes ni seas creativo. Si el resultado del error es None, ignóralo, al igual que si no concuerda con tu última respuesta.",
+        },
     ]
     if last_assistant_response:
         messages_list.append(
@@ -124,7 +125,6 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         )
 
     if additional_context:
-
         api_error = additional_context.get("api_error")
         messages_list.append({"role": "system", "content": f"Error: {api_error}"})
 
@@ -209,7 +209,7 @@ def handle_gpt_ft_message(
 ):
     # json_api = str(response.json())
     additional_context = {
-        "api_error": response.json()['error'] if "api/" in api_response_url else None,
+        "api_error": response.json()["error"] if "api/" in api_response_url else None,
     }
     gpt_response = ask_gpt_ft(
         user_input, message_placeholder, additional_context=additional_context
