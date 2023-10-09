@@ -14,6 +14,7 @@ def image_to_base64(image):
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
 
+
 def logo():
     logo = Image.open("IMG/logo.png")
     st.sidebar.markdown(
@@ -21,29 +22,30 @@ def logo():
         unsafe_allow_html=True,
     )
 
+
 def footer():
     logo_grk = Image.open("IMG/grk_logo.png")
-    st.sidebar.divider()  
+    st.sidebar.divider()
     st.sidebar.markdown(
-    f'<h6 style="text-align: center">Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by &nbsp<a href="https://github.com/GRKdev/StreamLit-Api"><img src="data:image/png;base64,{image_to_base64(logo_grk)}" alt="GRK" height="16"&nbsp</a></h6>',
-    unsafe_allow_html=True)
+        f'<h6 style="text-align: center">Made in &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="12">&nbsp by &nbsp<a href="https://github.com/GRKdev/StreamLit-Api"><img src="data:image/png;base64,{image_to_base64(logo_grk)}" alt="GRK" height="16"&nbsp</a></h6>',
+        unsafe_allow_html=True,
+    )
+
 
 def clear_chat_history():
     st.session_state.chat_history = []
     st.session_state.last_assistant_response = ""
 
 
-
 import streamlit as st
 
-def display_sidebar_info():
 
+def display_sidebar_info():
     option = st.sidebar.selectbox(
-        ' ',
-        ('Ejemplos','Clientes', 'Artículos', 'Albaranes', 'Finanzas', 'Otros')
+        " ", ("Ejemplos", "Clientes", "Artículos", "Albaranes", "Finanzas", "Otros")
     )
 
-    if option == 'Clientes':
+    if option == "Clientes":
         lines = [
             "Dona'm info del client GRK",
             "telefono Maria Lopez",
@@ -52,17 +54,16 @@ def display_sidebar_info():
             "¿De quién es el tlf 955555555?",
             "Email de Global Data",
             "Quién es el cliente Pedro Muñoz?",
-            "Dame emails de GRK y de i-and",
             "¿Cómo puedo contactar con Ana Belen?",
             "Adreça de Andorra Telecom",
             "El teléfono 941123456 ¿De quién es?",
-            "info de clientes Telecom y Ultra Tech"
+            "info de clientes Telecom y Ultra Tech",
         ]
 
         for line in lines:
             st.sidebar.markdown(f"```markdown\n{line}\n```")
 
-    elif option == 'Artículos':
+    elif option == "Artículos":
         lineas = [
             "info article Apple",
             "toda info articulo Razer Blackwidow",
@@ -75,14 +76,13 @@ def display_sidebar_info():
             "toda la info art 2017, formato lista",
             "Información completa artículo 2024",
             "Stock article Sony WH-1000XM4",
-            "Dame la descripcion del articulo airpods"
+            "Dame la descripcion del articulo airpods",
         ]
-        
+
         for line in lineas:
             st.sidebar.markdown(f"```markdown\n{line}\n```")
 
-
-    elif option == 'Albaranes':
+    elif option == "Albaranes":
         lineas = [
             "¿Cuál es el albaran 1012?",
             "Albarán 1014",
@@ -91,14 +91,13 @@ def display_sidebar_info():
             "ver albaràn 2050",
             "Albaràn 1021, de que cliente es?",
             "Alb 1022 ¿Está facturado?",
-            "Albarà 1023, dona'm el nº del pedido"
+            "Albarà 1023, dona'm el nº del pedido",
         ]
-        
+
         for line in lineas:
             st.sidebar.markdown(f"```markdown\n{line}\n```")
 
-
-    elif option == 'Finanzas':
+    elif option == "Finanzas":
         lineas = [
             "Facturacion de la empresa",
             "Facturación actual / facturación",
@@ -111,13 +110,13 @@ def display_sidebar_info():
             "Ganancias totales",
             "¿Cuánto hemos ingresado en 2022?",
             "Facturación cliente Pepito grillo",
-            "ingresos totales cliente Ultra Tech"
+            "ingresos totales cliente Ultra Tech",
         ]
 
         for line in lineas:
             st.sidebar.markdown(f"```markdown\n{line}\n```")
 
-    elif option == 'Otros':
+    elif option == "Otros":
         lineas = [
             "¿Qué es iand.dev?",
             "Quien ha creado el chatbot?",
@@ -128,15 +127,16 @@ def display_sidebar_info():
             "Sobre qué puedo preguntarte?",
             "Quién está detrás de tu desarrollo?",
             "¿Cómo puedo reportar un error?",
-            "¡Eres terrible!"
+            "¡Eres terrible!",
         ]
 
         for line in lineas:
             st.sidebar.markdown(f"```markdown\n{line}\n```")
 
-    st.sidebar.button('Borrar Historial', on_click=clear_chat_history)
+    st.sidebar.button("Borrar Historial", on_click=clear_chat_history)
 
     footer()
+
 
 def display_main_info():
     st.info(
@@ -167,15 +167,16 @@ def display_main_info():
         No te preocupes, tu clave no se almacenará de ninguna forma en nuestros servidores, únicamente en tu sesión actual del navegador. 
         """
     )
-    
-    
+
+
 ## Sidebar Stats Page
 
 DOMINIO = st.secrets.get("DOMINIO", os.getenv("DOMINIO"))
 
+
 def make_authenticated_request(url):
     token = token_manager.get_token()
-    headers = {'Authorization': f'Bearer {token}'}
+    headers = {"Authorization": f"Bearer {token}"}
     full_url = DOMINIO + url
     try:
         response = requests.get(full_url, headers=headers)
@@ -185,67 +186,68 @@ def make_authenticated_request(url):
         print(f"Error en la petición: {e}")
     return None
 
+
 def display_sidebar_info_stats():
     with st.sidebar.expander("🔍 Artículos"):
-        if st.button("Marca Producto", key='button_marca_producto'):
+        if st.button("Marca Producto", key="button_marca_producto"):
             data = make_authenticated_request("/api/art_stat?stat=stat_marca")
             if data:
                 st.session_state.show_chart.insert(0, ("marca", data))
-        
-        if st.button("Familia Producto", key='button_familia_producto'):
+
+        if st.button("Familia Producto", key="button_familia_producto"):
             data = make_authenticated_request("/api/art_stat?stat=stat_fam")
             if data:
                 st.session_state.show_chart.insert(0, ("fam", data))
 
     with st.sidebar.expander("👥 Clientes"):
-        if st.button("Domicili Client", key='button_domicili_client'):
+        if st.button("Domicili Client", key="button_domicili_client"):
             data = make_authenticated_request("/api/cli_stat?stat=comu")
             if data:
                 st.session_state.show_chart.insert(0, ("cli", data))
-                
-        if st.button("Client barres", key='button_client_barres'):
+
+        if st.button("Client barres", key="button_client_barres"):
             data = make_authenticated_request("/api/cli_stat?stat=comu")
             if data:
                 st.session_state.show_chart.insert(0, ("cli_barras", data))
 
     with st.sidebar.expander("💶 Facturación"):
-        if st.button("Anuales agrupadas", key='button_ingresos_anuales_group'):
+        if st.button("Anuales agrupadas", key="button_ingresos_anuales_group"):
             data = make_authenticated_request("/api/alb_stat?fact_total=true")
             if data:
                 st.session_state.show_chart.insert(0, ("total_group_fact", data))
 
-        if st.button("2023", key='button_ingresos_current_year'):
+        if st.button("2023", key="button_ingresos_current_year"):
             data = make_authenticated_request("/api/alb_stat?fact_cy=true")
             if data:
                 st.session_state.show_chart.insert(0, ("cy", data))
-                
-        if st.button("2022", key='button_ingresos_selected_year'):
+
+        if st.button("2022", key="button_ingresos_selected_year"):
             data = make_authenticated_request("/api/alb_stat?fact_sy=2022")
             if data:
                 st.session_state.show_chart.insert(0, ("selectedyear", data))
-                
-        if st.button("Cliente GRK", key='button_key'):
+
+        if st.button("Cliente GRK", key="button_key"):
             data = make_authenticated_request("/api/alb_stat?cli_fact_cy=grk")
             if data:
                 st.session_state.show_chart.insert(0, ("facturacio_client", data))
 
     with st.sidebar.expander("💰 Ingresos"):
-        if st.button("Anuales agrupadas", key='button_ganancias_anuales_group'):
+        if st.button("Anuales agrupadas", key="button_ganancias_anuales_group"):
             data = make_authenticated_request("/api/alb_stat?ing_total=true")
             if data:
                 st.session_state.show_chart.insert(0, ("total_group_ing", data))
 
-        if st.button("2023", key='button_ganacias_current_year'):
+        if st.button("2023", key="button_ganacias_current_year"):
             data = make_authenticated_request("/api/alb_stat?ing_cy=true")
             if data:
                 st.session_state.show_chart.insert(0, ("ing_cy", data))
 
-        if st.button("2022", key='button_ganacias_selected_year'):
+        if st.button("2022", key="button_ganacias_selected_year"):
             data = make_authenticated_request("/api/alb_stat?ing_sy=2022")
             if data:
                 st.session_state.show_chart.insert(0, ("selectedyear_ing", data))
 
-        if st.button("Cliente GRK", key='button_ing_key'):
+        if st.button("Cliente GRK", key="button_ing_key"):
             data = make_authenticated_request("/api/alb_stat?cli_ing_cy=grk")
             if data:
                 st.session_state.show_chart.insert(0, ("ganancia_client", data))
