@@ -14,6 +14,15 @@ from utils.chart_utils import (
     render_grouped_bar_chart_fact_cli_3_years,
     render_grouped_bar_chart_ing_cli_3_years,
 )
+import pymongo
+from streamlit_feedback import streamlit_feedback
+
+
+MONGO_URI = st.secrets.get("MONGO_URI", os.getenv("MONGO_URI"))
+client = pymongo.MongoClient(MONGO_URI)
+db = client["feedback"]
+feedback_collection = db["feedback"]
+
 
 OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
 model_name_ft = st.secrets["OPENAI_MODEL"].split(":")[3].upper()
@@ -68,7 +77,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Nunca sugieras al usuario que realice una compra o venta. Tampoco tengas muletilla de despedirte ni ofrecer más información.",
+            "content": "Separás los resultados por grupos. No harás una frase de introducción ni una despedida, darás los datos y ya. Nunca sugieras al usuario que realice una compra o venta.",
         },
     ]
     if additional_context:
@@ -100,6 +109,8 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     placeholder.markdown(full_response)
 
     last_assistant_response = full_response.strip()
+    feedback = streamlit_feedback(feedback_type="thumbs")
+    feedback
 
     return last_assistant_response
 
@@ -113,7 +124,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Recuerda leer el contexto, Tu respuesta anterior, la pregunta del user y si obtienes 'error' formula una respuesta en base al error y el promp del User, no inventes ni seas creativo. Si el resultado del error es None, ignóralo, al igual que si no concuerda con tu última respuesta.",
+            "content": "Recuerda leer el contexto, Tu respuesta anterior, la pregunta del user y si obtienes 'error' formula una respuesta en base al error y el promp del User. Si el resultado del error es None, ignóralo, si te piden más informació aporta lo que tú también sepas en tu conocimiento.",
         },
     ]
     if last_assistant_response:

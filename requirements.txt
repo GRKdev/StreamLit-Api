@@ -2,3 +2,5 @@ openai
 streamlit
 streamlit_echarts
 PyJWT
+pymongo
+streamlit_feedback
