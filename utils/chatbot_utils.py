@@ -77,7 +77,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Separás los resultados por grupos. No harás una frase de introducción ni una despedida, darás los datos y ya. Nunca sugieras al usuario que realice una compra o venta.",
+            "content": "Separás los resultados por grupos. No harás una frase de despedida, darás los datos y ya. Nunca sugieras al usuario que realice una compra o venta.",
         },
     ]
     if additional_context:
