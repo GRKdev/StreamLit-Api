@@ -124,7 +124,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Recuerda leer el contexto, Tu respuesta anterior, la pregunta del user y si obtienes 'error' formula una respuesta en base al error y el promp del User. Si el resultado del error es None, ignóralo, si te piden más informació aporta lo que tú también sepas en tu conocimiento.",
+            "content": "Si obtienes 'error' formula una respuesta en base al error y el promp del User. Si el resultado del error es None, ignóralo, si te piden más informació aporta lo que tú también sepas en tu conocimiento.",
         },
     ]
     if last_assistant_response:
