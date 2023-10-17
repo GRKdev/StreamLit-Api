@@ -1,5 +1,4 @@
 <p align="center">
-<img src="https://img.shields.io/github/languages/code-size/GRKdev/StreamLit-Api" alt="GitHub code size in bytes" />
 <img src="https://img.shields.io/github/last-commit/GRKdev/StreamLit-Api" alt="GitHub last commit" />
 <img src="https://img.shields.io/github/commit-activity/m/GRKdev/StreamLit-Api" alt="GitHub commit activity month" />
 <img src="https://img.shields.io/github/contributors/GRKdev/StreamLit-Api" alt="GitHub contributors" />
@@ -43,6 +42,10 @@ Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chat
 <a href="https://github.com/GRKdev/StreamLit-Api/graphs/contributors">
 <img src="https://contrib.rocks/image?repo=GRKdev/StreamLit-Api" />
 </a>
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [**MIT License**](https://github.com/GRKdev/StreamLit-Api/blob/main/LICENSE) file for details.
 
 ---
 
