@@ -1,3 +1,10 @@
+<p align="center">
+<img src="https://img.shields.io/github/languages/code-size/GRKdev/StreamLit-Api" alt="GitHub code size in bytes" />
+<img src="https://img.shields.io/github/last-commit/GRKdev/StreamLit-Api" alt="GitHub last commit" />
+<img src="https://img.shields.io/github/commit-activity/m/GRKdev/StreamLit-Api" alt="GitHub commit activity month" />
+<img src="https://img.shields.io/github/license/GRKdev/StreamLit-Api" alt="GitHub license" />
+</p>
+
 # ChatBot Streamlit API NOSQL
 
 ## Descripción General
@@ -32,6 +39,10 @@ Creación del chatbot utilizando Streamlit. El usuario hace preguntas, y el chat
 - [ ] Datos con embeddings (Langchain/Llama-Index) para chatear con los documentos
 - [ ] Creación de Agentes y Functiones personalizadas
 
+## 🙌 Contributors
+<a href="https://github.com/GRKdev/StreamLit-Api/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=GRKdev/StreamLit-Api" />
+</a>
 ---
 
 # ChatBot Streamlit API NOSQL
