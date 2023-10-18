@@ -1,7 +1,6 @@
 <p align="center">
 <img src="https://img.shields.io/github/last-commit/GRKdev/StreamLit-Api" alt="GitHub last commit" />
 <img src="https://img.shields.io/github/commit-activity/m/GRKdev/StreamLit-Api" alt="GitHub commit activity month" />
-<img src="https://img.shields.io/github/contributors/GRKdev/StreamLit-Api" alt="GitHub contributors" />
 </p>
 
 # ChatBot Streamlit API NOSQL
