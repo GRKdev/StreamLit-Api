@@ -78,5 +78,6 @@ Creation of the chatbot using Streamlit. The user asks questions, and the chatbo
 - [x] Added responses with graphs
 - [x] Added last question/answer context, and API errors
 - [x] Added GPT-3.5 Turbo Finetuned response for answers without database results
+- [x] Add Feedback for chatbot responses (Helicone)
 - [ ] Data with embeddings (Langchain/Llama-Index) for chatting with documents
 - [ ] Creation of Agents and Custom Functions

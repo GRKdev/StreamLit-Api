@@ -2,6 +2,10 @@ import streamlit as st
 import openai
 import os
 import re
+import pymongo
+import uuid
+import requests
+import json
 from utils.chart_utils import (
     render_pie_chart_marca,
     render_pie_chart_family,
@@ -14,8 +18,6 @@ from utils.chart_utils import (
     render_grouped_bar_chart_fact_cli_3_years,
     render_grouped_bar_chart_ing_cli_3_years,
 )
-import pymongo
-from streamlit_feedback import streamlit_feedback
 
 
 MONGO_URI = st.secrets.get("MONGO_URI", os.getenv("MONGO_URI"))
@@ -51,7 +53,6 @@ def ask_fine_tuned_api(prompt):
         },
     )
     api_response = response.choices[0].text.strip()
-    api_response = api_response.strip()
 
     match = re.search(r"(api/[^ ?]+)(\?.*)?", api_response)
 
@@ -91,6 +92,8 @@ def ask_gpt(prompt, placeholder, additional_context=None):
 
     full_response = ""
 
+    request_id = str(uuid.uuid4())
+
     for response in openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages_list,
@@ -102,6 +105,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         headers={
             "Helicone-Auth": HELICONE_AUTH,
             "Helicone-Property-Session": HELICONE_SESSION,
+            "Helicone-Request-Id": request_id,
         },
     ):
         full_response += response.choices[0].delta.get("content", "")
@@ -109,10 +113,8 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     placeholder.markdown(full_response)
 
     last_assistant_response = full_response.strip()
-    feedback = streamlit_feedback(feedback_type="thumbs")
-    feedback
 
-    return last_assistant_response
+    return last_assistant_response, request_id
 
 
 def ask_gpt_ft(prompt, placeholder, additional_context=None):
@@ -142,6 +144,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
     messages_list.append({"role": "user", "content": prompt})
 
     full_response = ""
+    request_id = str(uuid.uuid4())
 
     for response in openai.ChatCompletion.create(
         model=OPENAI_MODEL_35,
@@ -154,6 +157,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
         headers={
             "Helicone-Auth": HELICONE_AUTH,
             "Helicone-Property-Session": HELICONE_SESSION,
+            "Helicone-Request-Id": request_id,
         },
     ):
         full_response += response.choices[0].delta.get("content", "")
@@ -162,7 +166,7 @@ def ask_gpt_ft(prompt, placeholder, additional_context=None):
 
     last_assistant_response = full_response.strip()
 
-    return last_assistant_response
+    return last_assistant_response, request_id
 
 
 def generate_response_from_mongo_results(data):
@@ -172,12 +176,42 @@ def generate_response_from_mongo_results(data):
         return str(data)
 
 
+def provide_feedback(heliconeId, rating):
+    url = "https://api.hconeai.com/v1/feedback"
+    headers = {
+        "Helicone-Auth": HELICONE_AUTH,
+        "Content-Type": "application/json",
+    }
+    data = {
+        "helicone-id": heliconeId,
+        "rating": rating,
+    }
+
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        response.raise_for_status()
+    except requests.RequestException as e:
+        pass
+
+
+def display_feedback_buttons(request_id):
+    def send_thumbs_up_feedback():
+        provide_feedback(request_id, True)
+
+    def send_thumbs_down_feedback():
+        provide_feedback(request_id, False)
+
+    col_space, thumbs_up, thumbs_down = st.columns([15, 1, 1])
+    thumbs_up.button("✔", on_click=send_thumbs_up_feedback)
+    thumbs_down.button("✖", on_click=send_thumbs_down_feedback)
+
+
 def default_handler(data, message_placeholder, user_input):
     json_response = generate_response_from_mongo_results(data)
     additional_context = {
         "previous_response": user_input,
     }
-    gpt_response = ask_gpt(
+    gpt_response, request_id = ask_gpt(
         json_response, message_placeholder, additional_context=additional_context
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
@@ -185,6 +219,10 @@ def default_handler(data, message_placeholder, user_input):
         f"<div style='text-align:right; color:green; font-size:small;'>✅ Modelo API: {model_name_ft}. Respuesta elaborada con base de datos y GPT-3.5. Revisa el resultado.</div>",
         unsafe_allow_html=True,
     )
+
+    display_feedback_buttons(request_id)
+
+    return last_assistant_response
 
 
 def handle_chat_message(api_response_url, data, message_placeholder, user_input):
@@ -211,8 +249,9 @@ def handle_chat_message(api_response_url, data, message_placeholder, user_input)
 
     if handler:
         handler(data)
+        return None
     else:
-        default_handler(data, message_placeholder, user_input)
+        return default_handler(data, message_placeholder, user_input)
 
 
 def handle_gpt_ft_message(
@@ -222,7 +261,7 @@ def handle_gpt_ft_message(
     additional_context = {
         "api_error": response.json()["error"] if "api/" in api_response_url else None,
     }
-    gpt_response = ask_gpt_ft(
+    gpt_response, request_id = ask_gpt_ft(
         user_input, message_placeholder, additional_context=additional_context
     )
     st.session_state.chat_history.append({"role": "assistant", "content": gpt_response})
@@ -230,3 +269,4 @@ def handle_gpt_ft_message(
         f"<div style='text-align:right; color:red; font-size:small;'>⚠️ Modelo: GPT-3.5-{model_name}. Los datos pueden ser erróneos.</div>",
         unsafe_allow_html=True,
     )
+    display_feedback_buttons(request_id)
