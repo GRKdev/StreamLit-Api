@@ -2,7 +2,6 @@ import streamlit as st
 import openai
 import os
 import re
-import pymongo
 import uuid
 import requests
 import json
@@ -18,12 +17,6 @@ from utils.chart_utils import (
     render_grouped_bar_chart_fact_cli_3_years,
     render_grouped_bar_chart_ing_cli_3_years,
 )
-
-
-MONGO_URI = st.secrets.get("MONGO_URI", os.getenv("MONGO_URI"))
-client = pymongo.MongoClient(MONGO_URI)
-db = client["feedback"]
-feedback_collection = db["feedback"]
 
 
 OPEN_AI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL"))
