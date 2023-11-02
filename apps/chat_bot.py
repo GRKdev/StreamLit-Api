@@ -12,6 +12,7 @@ from utils.chatbot_utils import (
 )
 
 token_manager = TokenManager()
+lakera_guard_api_key = st.secrets.get("LAKERA_API", os.getenv("LAKERA_API"))
 
 
 def chat_bot():
@@ -38,49 +39,112 @@ def chat_bot():
                 st.markdown(message["content"])
 
         user_input = st.chat_input("Ingresa tu pregunta:")
+
         if user_input:
             user_input = user_input.strip()
 
-        if user_input:
-            st.session_state.chat_history.append(
-                {"role": "user", "content": user_input}
+            ## Lakera Guard for prompt injection
+            lakera_response = requests.post(
+                "https://api.lakera.ai/v1/prompt_injection",
+                json={"input": user_input},
+                headers={"Authorization": f"Bearer {lakera_guard_api_key}"},
             )
-            with st.chat_message("user"):
-                st.markdown(user_input)
 
-            if (
-                len(user_input) == 12 or len(user_input) == 13
-            ) and user_input.isdigit():
-                api_response_url = f"/api/art?bar={user_input}"
+            if lakera_response.json()["results"][0]["flagged"]:
+                st.session_state.chat_history.append(
+                    {"role": "user", "content": user_input}
+                )
+                with st.chat_message("user"):
+                    st.markdown(user_input)
+
+                error_message = "Mensaje no permitido por motivos de seguridad.🚫"
+
+                st.session_state.chat_history.append(
+                    {"role": "assistant", "content": error_message}
+                )
+                with st.chat_message("assistant"):
+                    st.error(error_message, icon="⚠️")
+                return
             else:
-                api_response_url = ask_fine_tuned_api(user_input)
+                moderation_response = requests.post(
+                    "https://api.lakera.ai/v1/moderation",
+                    json={"input": user_input},
+                    headers={"Authorization": f"Bearer {lakera_guard_api_key}"},
+                )
 
-            if "api/" in api_response_url:
-                full_url = DOMINIO + api_response_url
-                headers = {"Authorization": f"Bearer {token}"}
-                try:
-                    response = requests.get(full_url, headers=headers)
-                    response.raise_for_status()
-                except requests.exceptions.RequestException as e:
-                    if isinstance(
-                        e, requests.exceptions.HTTPError
-                    ) and e.response.status_code in [400, 404, 500]:
-                        response = e.response
-                    else:
-                        st.warning("Error de conexión API con endpoint", icon="🔧")
-                        return
-            else:
-                response = None
+                moderation_results = moderation_response.json()["results"][0]
 
-            with st.chat_message("assistant"):
-                message_placeholder = st.empty()
+                if any(moderation_results["categories"].values()):
+                    error_messages = []
+                    if moderation_results["categories"]["hate"]:
+                        error_messages.append("Mensaje de odio")
+                    if moderation_results["categories"]["sexual"]:
+                        error_messages.append("Mensaje sexual")
 
-                if response and response.status_code == 200:
-                    data = response.json()
-                    handle_chat_message(
-                        api_response_url, data, message_placeholder, user_input
+                    combined_error_message = " / ".join(error_messages)
+
+                    st.session_state.chat_history.append(
+                        {"role": "user", "content": user_input}
                     )
+                    with st.chat_message("user"):
+                        st.markdown(user_input)
+
+                    error_message = f"Alerta de moderación: {combined_error_message}.🔞"
+                    st.session_state.chat_history.append(
+                        {"role": "assistant", "content": error_message}
+                    )
+
+                    with st.chat_message("assistant"):
+                        st.error(error_message, icon="⚠️")
+
+                    return
+                ## Lakera Guard for prompt injection
+
                 else:
-                    handle_gpt_ft_message(
-                        user_input, message_placeholder, api_response_url, response
+                    st.session_state.chat_history.append(
+                        {"role": "user", "content": user_input}
                     )
+                    with st.chat_message("user"):
+                        st.markdown(user_input)
+
+                    if (
+                        len(user_input) == 12 or len(user_input) == 13
+                    ) and user_input.isdigit():
+                        api_response_url = f"/api/art?bar={user_input}"
+                    else:
+                        api_response_url = ask_fine_tuned_api(user_input)
+
+                    if "api/" in api_response_url:
+                        full_url = DOMINIO + api_response_url
+                        headers = {"Authorization": f"Bearer {token}"}
+                        try:
+                            response = requests.get(full_url, headers=headers)
+                            response.raise_for_status()
+                        except requests.exceptions.RequestException as e:
+                            if isinstance(
+                                e, requests.exceptions.HTTPError
+                            ) and e.response.status_code in [400, 404, 500]:
+                                response = e.response
+                            else:
+                                st.warning(
+                                    "Error de conexión API con endpoint", icon="🔧"
+                                )
+                                return
+                    else:
+                        response = None
+
+                    with st.chat_message("assistant"):
+                        message_placeholder = st.empty()
+
+                        if response and response.status_code == 200:
+                            data = response.json()
+                            handle_chat_message(
+                                api_response_url, data, message_placeholder, user_input
+                            )
+                        else:
+                            handle_gpt_ft_message(
+                                user_input,
+                                message_placeholder,
+                                api_response_url,
+                                response,
+                            )
