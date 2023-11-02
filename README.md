@@ -12,7 +12,6 @@ Desarrollé un Chatbot avanzado que promueve la interacción en tiempo real y en
 - [Python](https://www.python.org/)
 - [Streamlit](https://streamlit.io/)
 - [Streamlit-Echarts](https://github.com/andfanilo/streamlit-echarts)
-- [Pinecone](https://www.pinecone.io/)
 - [Helicone](https://helicone.ai/)
 - [Lakera](https://lakera.ai/)
 
@@ -51,7 +50,6 @@ Creation of the chatbot using Streamlit. The user asks questions, and the chatbo
 - [Python](https://www.python.org/)
 - [Streamlit](https://streamlit.io/)
 - [Streamlit-Echarts](https://github.com/andfanilo/streamlit-echarts)
-- [Pinecone](https://www.pinecone.io/)
 - [Helicone](https://helicone.ai/)
 - [Lakera](https://lakera.ai/)
 
