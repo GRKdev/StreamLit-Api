@@ -5,6 +5,8 @@ import openai
 from utils.sidebar_info import display_sidebar_info, display_main_info
 from utils.generate_token import TokenManager
 from utils.key_check import run_key_check, get_openai_key
+from utils.lakera_guard import LakeraGuard
+
 from utils.chatbot_utils import (
     handle_chat_message,
     handle_gpt_ft_message,
@@ -38,19 +40,14 @@ def chat_bot():
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
+        lakera_guard = LakeraGuard(lakera_guard_api_key)
         user_input = st.chat_input("Ingresa tu pregunta:")
 
         if user_input:
             user_input = user_input.strip()
 
             ## Lakera Guard for prompt injection
-            lakera_response = requests.post(
-                "https://api.lakera.ai/v1/prompt_injection",
-                json={"input": user_input},
-                headers={"Authorization": f"Bearer {lakera_guard_api_key}"},
-            )
-
-            if lakera_response.json()["results"][0]["flagged"]:
+            if lakera_guard.check_prompt_injection(user_input):
                 st.session_state.chat_history.append(
                     {"role": "user", "content": user_input}
                 )
@@ -58,7 +55,6 @@ def chat_bot():
                     st.markdown(user_input)
 
                 error_message = "Mensaje no permitido por motivos de seguridad.🚫"
-
                 st.session_state.chat_history.append(
                     {"role": "assistant", "content": error_message}
                 )
@@ -66,23 +62,9 @@ def chat_bot():
                     st.error(error_message, icon="⚠️")
                 return
             else:
-                moderation_response = requests.post(
-                    "https://api.lakera.ai/v1/moderation",
-                    json={"input": user_input},
-                    headers={"Authorization": f"Bearer {lakera_guard_api_key}"},
-                )
-
-                moderation_results = moderation_response.json()["results"][0]
-
-                if any(moderation_results["categories"].values()):
-                    error_messages = []
-                    if moderation_results["categories"]["hate"]:
-                        error_messages.append("Mensaje de odio")
-                    if moderation_results["categories"]["sexual"]:
-                        error_messages.append("Mensaje sexual")
-
-                    combined_error_message = " / ".join(error_messages)
-
+                categories, flagged = lakera_guard.check_moderation(user_input)
+                if flagged:
+                    combined_error_message = lakera_guard.get_error_messages(categories)
                     st.session_state.chat_history.append(
                         {"role": "user", "content": user_input}
                     )
@@ -93,12 +75,10 @@ def chat_bot():
                     st.session_state.chat_history.append(
                         {"role": "assistant", "content": error_message}
                     )
-
                     with st.chat_message("assistant"):
                         st.error(error_message, icon="⚠️")
-
                     return
-                ## Lakera Guard for prompt injection
+                ## End of Lakera Guard ##
 
                 else:
                     st.session_state.chat_history.append(
