@@ -67,11 +67,11 @@ def ask_gpt(prompt, placeholder, additional_context=None):
         },
         {
             "role": "system",
-            "content": "Recibirás una pregunta del User junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista. Proporciona una respuesta clara, coherente y útil. Precios en €",
+            "content": "Recibirás una pregunta del User junto con datos obtenidos de una base de datos. Debes usar ambas fuentes para ofrecer una respuesta en formato de lista, separando por articulos. Proporciona una respuesta clara, coherente y útil. Precios en € (ejemplo: 150 €).)",
         },
         {
             "role": "system",
-            "content": "Separás los resultados por grupos. No harás una frase de despedida, darás los datos y ya. Nunca sugieras al usuario que realice una compra o venta.",
+            "content": "Separás los resultados por grupos. Nunca sugieras al usuario que realice una compra o venta.",
         },
     ]
     if additional_context:
@@ -88,7 +88,7 @@ def ask_gpt(prompt, placeholder, additional_context=None):
     request_id = str(uuid.uuid4())
 
     for response in openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo-1106",
         messages=messages_list,
         max_tokens=1000,
         n=1,
